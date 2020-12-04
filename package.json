@@ -1,0 +1,20 @@
+{
+  "name": "knucks",
+  "version": "0.0.1",
+  "description": "Simple JavaScript Framework to build lightning fast SPAs using any template engine",
+  "main": "index.js",
+  "scripts": {
+    "test": "ts-node test.ts",
+    "build": "tsc -b"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.0.0",
+    "browserify": "^17.0.0",
+    "uglify-js": "^3.11.0"
+  },
+  "optionalDependencies": {
+    "nunjucks": "^3.0.0"
+  }
+}
