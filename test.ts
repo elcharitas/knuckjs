@@ -1,15 +1,13 @@
-import Chucks from "./dist";
+import Knuck from "./lib";
 
-let app = new Chucks(function create(Route){
+let app = new Knuck(function create(Route){
 
-    this.realpath = "#/home/klo";
+    this.realpath = "/home/test";
 
-    this.prefix = "#";
+    Route.pattern('myVar', '.*');
 
-    Route.pattern('mom', '.*')
-
-    Route.get('/{mom}', function(mo){
-        return mo
+    Route.get('/{myVar}', function(someVar){
+        return someVar;
     });
 
     this.run();

@@ -1,14 +1,15 @@
 {
-  "name": "knucks",
+  "name": "knuckjs",
   "version": "0.0.1",
   "description": "Simple JavaScript Framework to build lightning fast SPAs using any template engine",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "ts-node test.ts",
-    "build": "tsc -b"
+    "build": "tsc -b",
+    "package": "browserify lib/index.js -o dist/knuck.js && uglifyjs -c -m -o dist/knuck.min.js dist/knuck.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Jonathan Irhodia",
+  "license": "MIT",
   "devDependencies": {
     "typescript": "^4.0.0",
     "browserify": "^17.0.0",
@@ -16,5 +17,20 @@
   },
   "optionalDependencies": {
     "nunjucks": "^3.0.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elcharitas/knuckjs.git"
+  },
+  "keywords": [
+    "nunjucks",
+    "express",
+    "browser",
+    "response",
+    "knuckjs"
+  ],
+  "bugs": {
+    "url": "https://github.com/elcharitas/knuckjs/issues"
+  },
+  "homepage": "https://github.com/elcharitas/knuckjs#readme"
 }
