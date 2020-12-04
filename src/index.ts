@@ -5,7 +5,7 @@ import Resolver from "./resolve";
 import * as Util from "./utils";
 
 /** Chucks is what handles the rest... */
-export default class Knuck
+export = class Knuck
 {
     /**
      * The Current Route object

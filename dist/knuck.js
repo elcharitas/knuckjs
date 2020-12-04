@@ -1,4 +1,4 @@
-(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Knuck = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Controller = /** @class */ (function () {
@@ -188,14 +188,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 var router_1 = __importDefault(require("./router"));
 var controller_1 = __importDefault(require("./controller"));
 var paths_1 = __importDefault(require("./paths"));
 var resolve_1 = __importDefault(require("./resolve"));
 var Util = __importStar(require("./utils"));
-/** Chucks is what handles the rest... */
-var Knuck = /** @class */ (function () {
+module.exports = /** @class */ (function () {
     /**
      * Provide an easy way to register routes et al.
      *
@@ -278,7 +276,6 @@ var Knuck = /** @class */ (function () {
     };
     return Knuck;
 }());
-exports.default = Knuck;
 
 },{"./controller":1,"./paths":6,"./resolve":7,"./router":8,"./utils":9}],6:[function(require,module,exports){
 "use strict";
@@ -674,4 +671,5 @@ var debug = function (errorType) {
 };
 exports.debug = debug;
 
-},{"../errors":3}]},{},[5]);
+},{"../errors":3}]},{},[5])(5)
+});

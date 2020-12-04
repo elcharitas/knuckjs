@@ -6,7 +6,7 @@
   "scripts": {
     "test": "ts-node test.ts",
     "build": "tsc -b",
-    "package": "browserify lib/index.js -o dist/knuck.js && uglifyjs -c -m -o dist/knuck.min.js dist/knuck.js"
+    "package": "browserify lib/index.js -s Knuck -o dist/knuck.js && uglifyjs -c -m -o dist/knuck.min.js dist/knuck.js"
   },
   "author": "Jonathan Irhodia",
   "license": "MIT",
