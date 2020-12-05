@@ -41,32 +41,37 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = require("../utils");
 var BaseError = /** @class */ (function (_super) {
     __extends(BaseError, _super);
-    function BaseError() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
+    /**
+     * Prepares the error message
+     *
+     * @param msg
+     * @returns void
+     */
+    function BaseError(msg) {
+        var _this = _super.call(this, msg) || this;
         /**
          * The type of The Error
          *
          * @var string
          */
         _this.type = "ref";
-        /**
-         * Type code for the error
-         *
-         * @var number
-         */
-        _this.typeCode = 400;
+        _this.typeCode = 19400;
         /**
          * Error prefix for messages
          *
          * @var string
          */
-        _this.prefix = "";
+        _this.prefix = "Error";
         /**
          * Attached helplink for messages
          *
          * @var string
          */
-        _this.helplink = "";
+        _this.helplink = "https://knuck.js.org/errors";
+        _this.name = _this.prefix + ("[" + _this.typeCode + "]");
+        if (typeof msg !== "undefined") {
+            _this.message = msg + ".\nCheck \"" + _this.helplink + "\" for more help!";
+        }
         return _this;
     }
     /**
@@ -90,8 +95,15 @@ var BaseError = /** @class */ (function (_super) {
         args.forEach(function (arg, key) {
             msg = msg.replace("%" + key, arg);
         });
-        return this.message = this.prefix + "[" + this.typeCode + "]: " + msg + ". Check \"" + this.helplink + "\" for more help";
+        this.name = this.prefix + ("[" + this.typeCode + "]");
+        return this.message = msg + ".\nCheck \"" + this.helplink + "\" for more help!";
     };
+    /**
+     * Type code for the error
+     *
+     * @var number
+     */
+    BaseError.typeCode = 19400;
     return BaseError;
 }(Error));
 exports.default = BaseError;
@@ -130,7 +142,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var base_1 = __importDefault(require("./base"));
 var InstanceError = /** @class */ (function (_super) {
     __extends(InstanceError, _super);
-    function InstanceError(msg) {
+    /**
+     * Initialize the new error
+     *
+     * @param name
+     * @param type
+     * @returns void
+     */
+    function InstanceError(name, type) {
+        if (type === void 0) { type = "defined"; }
         var _this = _super.call(this) || this;
         /**
          * The type of The Error
@@ -138,28 +158,28 @@ var InstanceError = /** @class */ (function (_super) {
          * @var string
          */
         _this.type = "ref";
-        /**
-         * Type code for the error
-         *
-         * @var number
-         */
         _this.typeCode = 19458;
         /**
          * Error prefix for messages
          *
          * @var string
          */
-        _this.prefix = "";
+        _this.prefix = "InstanceError";
         /**
          * Attached helplink for messages
          *
          * @var string
          */
-        _this.helplink = "";
-        _this.setPrefix("InstanceError");
-        _this.setMessage(msg);
+        _this.helplink = "https://knuck.js.org/errors/instance";
+        _super.prototype.setMessage.call(_this, name + " must be " + ((type !== "defined" ? "of type " : "") + type));
         return _this;
     }
+    /**
+     * Type code for the error
+     *
+     * @var number
+     */
+    InstanceError.typeCode = 19458;
     return InstanceError;
 }(base_1.default));
 exports.default = InstanceError;
@@ -575,7 +595,7 @@ var Route = /** @class */ (function () {
             this.getInstance().$routes.push({ path: path, controller: controller, method: method });
         }
         else if (typeof controllerOrCallback !== "function") {
-            return utils_1.debug("19654", controllerOrCallback, "function");
+            return utils_1.debug("19458", "controllerOrCallback", "function");
         }
         else {
             var callback = controllerOrCallback;
@@ -664,7 +684,7 @@ var debug = function (errorType) {
     }
     var debugkit;
     for (var catcher in Debug) {
-        if (!(catcher in new Object) && Debug[catcher].typeCode === errorType) {
+        if (!(catcher in new Object) && Debug[catcher].typeCode == errorType) {
             throw new ((_a = Debug[catcher]).bind.apply(_a, __spreadArrays([void 0], args)))();
         }
     }

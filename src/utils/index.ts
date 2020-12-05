@@ -43,7 +43,7 @@ let debug = (errorType: string, ...args: Array<string>): void => {
     let debugkit: Debug.Error;
     for (let catcher in Debug)
     {
-        if (! (catcher in new Object) && Debug[catcher].typeCode === errorType)
+        if (! (catcher in new Object) && Debug[catcher].typeCode == errorType)
         {
             throw new Debug[catcher](...args);
         }

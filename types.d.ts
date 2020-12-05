@@ -80,7 +80,14 @@ declare module "errors/instance" {
          * @var string
          */
         helplink: string;
-        constructor(msg: any);
+        /**
+         * Initialize the new error
+         *
+         * @param name
+         * @param type
+         * @returns void
+         */
+        constructor(name: string, type: string);
     }
 }
 declare module "errors/index" {

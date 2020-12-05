@@ -16,21 +16,39 @@ class BaseError extends Error
      * 
      * @var number
      */
-    public typeCode: number = 400;
+    public static typeCode: number = 19400;
+    public typeCode: number = 19400;
 
     /**
      * Error prefix for messages
      * 
      * @var string
      */
-    public prefix: string = "";
+    public prefix: string = "Error";
 
     /**
      * Attached helplink for messages
      * 
      * @var string
      */
-    public helplink: string = "";
+    public helplink: string = "https://knuck.js.org/errors";
+
+    /**
+     * Prepares the error message
+     * 
+     * @param msg 
+     * @returns void
+     */
+    constructor(msg?: string)
+    {
+        super(msg);
+
+        this.name = this.prefix + `[${this.typeCode}]`;
+
+        if (typeof msg !== "undefined") {
+            this.message = `${msg}.\nCheck "${this.helplink}" for more help!`;
+        }
+    }
 
     /**
      * Sets the error prefix
@@ -56,6 +74,8 @@ class BaseError extends Error
             msg = msg.replace(`%${key}`, arg as string);
         });
 
-        return this.message = `${this.prefix}[${this.typeCode}]: ${msg}. Check "${this.helplink}" for more help`;
+        this.name = this.prefix + `[${this.typeCode}]`;
+
+        return this.message = `${msg}.\nCheck "${this.helplink}" for more help!`;
     }
 }

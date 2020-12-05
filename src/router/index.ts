@@ -136,7 +136,7 @@ export default class Route
         }
         else if (typeof controllerOrCallback !== "function")
         {
-            return debug("19654", controllerOrCallback, "function");
+            return debug("19458", "controllerOrCallback", "function");
         }
         else {
             let callback = controllerOrCallback;

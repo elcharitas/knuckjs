@@ -16,6 +16,7 @@ class InstanceError extends BaseError
      * 
      * @var number
      */
+    public static typeCode: number = 19458;
     public typeCode: number = 19458;
 
     /**
@@ -23,19 +24,25 @@ class InstanceError extends BaseError
      * 
      * @var string
      */
-    public prefix: string = "";
+    public prefix: string = "InstanceError";
 
     /**
      * Attached helplink for messages
      * 
      * @var string
      */
-    public helplink: string = "";
+    public helplink: string = "https://knuck.js.org/errors/instance";
 
-    constructor(msg)
+    /**
+     * Initialize the new error
+     * 
+     * @param name 
+     * @param type
+     * @returns void
+     */
+    constructor(name: string, type: string = "defined")
     {
         super();
-        this.setPrefix("InstanceError");
-        this.setMessage(msg);
+        super.setMessage(`${name} must be ${(type !== "defined" ? "of type " : "") + type}`)
     }
 }
