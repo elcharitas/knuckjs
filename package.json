@@ -2,9 +2,10 @@
   "name": "knuckjs",
   "version": "0.0.1",
   "description": "Simple JavaScript Framework to build lightning fast SPAs using any template engine",
-  "main": "lib/index.js",
+  "main": "./lib/index.js",
+  "typings": "./types.d.ts",
   "scripts": {
-    "test": "ts-node test.ts",
+    "test": "tsc --target es5 --esModuleInterop test.ts && node test.js",
     "build": "tsc -b",
     "package": "browserify lib/index.js -s Knuck -o dist/knuck.js && uglifyjs -c -m -o dist/knuck.min.js dist/knuck.js"
   },

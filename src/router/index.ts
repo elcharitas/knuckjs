@@ -130,15 +130,15 @@ export default class Route
      */
     protected static register(method: string, path: string, controllerOrCallback: any): void
     {
-        if (typeof controllerOrCallback !== "function")
+        if (controllerOrCallback instanceof Controller) {
+            let controller: Controller = controllerOrCallback;
+            this.getInstance().$routes.push({ path, controller, method });
+        }
+        else if (typeof controllerOrCallback !== "function")
         {
             return debug("19654", controllerOrCallback, "function");
         }
-
-        if (new controllerOrCallback instanceof Controller) {
-            let controller: Controller = new controllerOrCallback;
-            this.getInstance().$routes.push({ path, controller, method });
-        } else {
+        else {
             let callback = controllerOrCallback;
             this.getInstance().$routes.push({ path, callback, method });
         }

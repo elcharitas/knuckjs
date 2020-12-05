@@ -1,13 +1,21 @@
 import Knuck from "./lib";
 
-let app = new Knuck(function create(Route){
+let app: Knuck = new Knuck(function create(Route){
+    // original path
+    this.realpath = "/";
+    // KnuckJS supports patterns!
+    Route.pattern('id', '.*');
 
-    this.realpath = "/home/test";
+    // testing redirection...
+    Route.get('/', () => {
+        // redirect the app
+        this.realpath = "/page";
+        //this text won't show on fast networks
+        return "Redirecting...";
+    });
 
-    Route.pattern('myVar', '.*');
-
-    Route.get('/{myVar}', function(someVar){
-        return someVar;
+    Route.get('/home', function () {
+        return "Hello Knuck!"
     });
 
     this.run();

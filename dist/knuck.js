@@ -570,12 +570,12 @@ var Route = /** @class */ (function () {
      * @returns void
      */
     Route.register = function (method, path, controllerOrCallback) {
-        if (typeof controllerOrCallback !== "function") {
-            return utils_1.debug("19654", controllerOrCallback, "function");
-        }
-        if (new controllerOrCallback instanceof controller_1.default) {
-            var controller = new controllerOrCallback;
+        if (controllerOrCallback instanceof controller_1.default) {
+            var controller = controllerOrCallback;
             this.getInstance().$routes.push({ path: path, controller: controller, method: method });
+        }
+        else if (typeof controllerOrCallback !== "function") {
+            return utils_1.debug("19654", controllerOrCallback, "function");
         }
         else {
             var callback = controllerOrCallback;

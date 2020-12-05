@@ -4,7 +4,7 @@ import Pathfinder from "./paths";
 import Resolver from "./resolve";
 import * as Util from "./utils";
 
-/** Chucks is what handles the rest... */
+/** Knucks is what handles the rest... */
 export = class Knuck
 {
     /**
