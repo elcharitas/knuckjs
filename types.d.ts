@@ -23,6 +23,7 @@ declare module "errors/base" {
          *
          * @var number
          */
+        static typeCode: number;
         typeCode: number;
         /**
          * Error prefix for messages
@@ -36,6 +37,13 @@ declare module "errors/base" {
          * @var string
          */
         helplink: string;
+        /**
+         * Prepares the error message
+         *
+         * @param msg
+         * @returns void
+         */
+        constructor(msg?: string);
         /**
          * Sets the error prefix
          *
@@ -67,6 +75,7 @@ declare module "errors/instance" {
          *
          * @var number
          */
+        static typeCode: number;
         typeCode: number;
         /**
          * Error prefix for messages
@@ -87,7 +96,7 @@ declare module "errors/instance" {
          * @param type
          * @returns void
          */
-        constructor(name: string, type: string);
+        constructor(name: string, type?: string);
     }
 }
 declare module "errors/index" {
@@ -356,6 +365,7 @@ declare module "resolve/index" {
 }
 declare module "knuckjs" {
     import Pathfinder from "paths/index";
+    import Resolver from "resolve/index";
     const _default: {
         new (callback?: (Route: any, Controller: any, Util: object) => any): {
             /**
@@ -392,14 +402,14 @@ declare module "knuckjs" {
              * @param callback
              * @returns void
              */
-            render(currentRoute: any, callback?: (content: any) => any): void;
+            render(currentRoute: any, callback?: (resolve: Resolver) => any): void;
             /**
              * Single Page Application output
              *
              * @param callback
              * @returns void
              */
-            run(callback?: (content: any) => any): void;
+            run(callback?: (resolve: Resolver) => any): void;
         };
     };
     /** Knucks is what handles the rest... */

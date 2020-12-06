@@ -21,20 +21,20 @@
 
 Installing knuckjs is effortless as you can choose to install it as a dependency using npm or yarn
 
-```sh
+``` bash
 npm i knuckjs
 ---- or ----
 yarn add knuckjs
 ```
 
 or directly include using a CDN like jsDelivr
-```html
+``` html
 <script src="https://cdn.jsdelivr.net/npm/knuckjs@0.0.2/dist/knuck.min.js"></script>
 ```
 
 ## Sample Usage
-Here is a sample Hello Knuck. Full documentation available [here](https://knuck.js.org/docs/latest).
-```ts
+Here is a sample `Hello Knuck` app. Full documentation is available [here](https://knuck.js.org/docs/latest).
+``` ts
 // Hello Knuck in Typescript
 import * as Knuck from "knuckjs";
 
