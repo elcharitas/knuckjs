@@ -363,7 +363,7 @@ declare module "resolve/index" {
         });
     }
 }
-declare module "knuckjs" {
+declare module "index" {
     import Pathfinder from "paths/index";
     import Resolver from "resolve/index";
     const _default: {

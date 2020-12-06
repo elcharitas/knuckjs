@@ -403,9 +403,11 @@ define("paths/index", ["require", "exports"], function (require, exports) {
             var _this = this;
             var matches = this.$parts.length >= this.$vars.length;
             this.$parts.forEach(function (part, key) {
+                var _a;
                 var currentVar = _this.$vars[key] || "";
-                var partMatch = part.match(_this.regex(currentVar));
-                matches = matches && ((currentVar === part) || (partMatch && partMatch.length > 0));
+                var matchVar = _this.$regexp.exec(currentVar) || [];
+                var partMatch = ((_a = part.match(_this.regex(matchVar[0]))) === null || _a === void 0 ? void 0 : _a.length) > 0;
+                matches = matches && (currentVar === part || partMatch);
             });
             return matches;
         };
@@ -417,6 +419,9 @@ define("paths/index", ["require", "exports"], function (require, exports) {
          */
         Pathfinder.prototype.regex = function (name) {
             var pattern = "([^\/]+)";
+            if (typeof name === "undefined") {
+                return null;
+            }
             if (typeof this.$patterns[name] === "string") {
                 pattern = this.$patterns[name];
             }
@@ -622,10 +627,9 @@ define("index", ["require", "exports", "router/index", "controller/index", "path
             var currentRoute = this.output();
             this.render(currentRoute, callback);
             setInterval(function () {
-                var wakeput = _this.output();
-                if ((wakeput === null || wakeput === void 0 ? void 0 : wakeput.route.path) !== (currentRoute === null || currentRoute === void 0 ? void 0 : currentRoute.route.path)) {
-                    currentRoute = wakeput;
-                    _this.render(currentRoute, callback);
+                var newRoute = _this.output();
+                if ((newRoute === null || newRoute === void 0 ? void 0 : newRoute.route.path) !== (currentRoute === null || currentRoute === void 0 ? void 0 : currentRoute.route.path)) {
+                    _this.render(currentRoute = newRoute, callback);
                 }
             }, 5);
         };
