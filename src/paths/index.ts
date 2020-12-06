@@ -63,8 +63,9 @@ export default class Pathfinder
 
         this.$parts.forEach((part, key) => {
             let currentVar: string = this.$vars[key] || "";
-            let partMatch: RegExpMatchArray = part.match(this.regex(currentVar));
-            matches = matches && ((currentVar === part) || (partMatch && partMatch.length > 0));
+            let matchVar: RegExpMatchArray = this.$regexp.exec(currentVar) || [];
+            let partMatch: boolean = part.match(this.regex(matchVar[0]))?.length > 0;
+            matches = matches && (currentVar === part || partMatch);
         });
 
         return matches;
@@ -79,6 +80,11 @@ export default class Pathfinder
     public regex(name: string): RegExp
     {
         let pattern: string = "([^\/]+)";
+
+        if (typeof name === "undefined")
+        {
+            return null;
+        }
 
         if (typeof this.$patterns[name] === "string")
         {

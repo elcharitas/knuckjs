@@ -13,7 +13,7 @@ var app = new lib_1.default(function create(Route) {
     // testing redirection...
     Route.get('/', function () {
         // redirect the app
-        _this.realpath = "/page";
+        _this.realpath = "/home";
         //this text won't show on fast networks
         return "Redirecting...";
     });

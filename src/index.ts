@@ -101,10 +101,9 @@ export = class Knuck
         this.render(currentRoute, callback);
 
         setInterval(() => {
-            let wakeput = this.output();
-            if (wakeput?.route.path !== currentRoute?.route.path) {
-                currentRoute = wakeput;
-                this.render(currentRoute, callback);
+            let newRoute = this.output();
+            if (newRoute?.route.path !== currentRoute?.route.path) {
+                this.render(currentRoute = newRoute, callback);
             }
         }, 5);
     }
