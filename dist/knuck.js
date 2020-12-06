@@ -263,12 +263,12 @@ module.exports = /** @class */ (function () {
      * @returns void
      */
     Knuck.prototype.render = function (currentRoute, callback) {
-        callback = callback || (function (content) {
+        callback = callback || (function (resolve) {
             if (typeof document === "object") {
-                document.write(content);
+                document.write(resolve.content);
             }
             else {
-                console.log(content);
+                console.log(resolve);
             }
         });
         if ((currentRoute === null || currentRoute === void 0 ? void 0 : currentRoute.path) instanceof paths_1.default) {
@@ -287,10 +287,9 @@ module.exports = /** @class */ (function () {
         var currentRoute = this.output();
         this.render(currentRoute, callback);
         setInterval(function () {
-            var wakeput = _this.output();
-            if ((wakeput === null || wakeput === void 0 ? void 0 : wakeput.route.path) !== (currentRoute === null || currentRoute === void 0 ? void 0 : currentRoute.route.path)) {
-                currentRoute = wakeput;
-                _this.render(currentRoute, callback);
+            var newRoute = _this.output();
+            if ((newRoute === null || newRoute === void 0 ? void 0 : newRoute.route.path) !== (currentRoute === null || currentRoute === void 0 ? void 0 : currentRoute.route.path)) {
+                _this.render(currentRoute = newRoute, callback);
             }
         }, 5);
     };
@@ -335,9 +334,11 @@ var Pathfinder = /** @class */ (function () {
         var _this = this;
         var matches = this.$parts.length >= this.$vars.length;
         this.$parts.forEach(function (part, key) {
+            var _a;
             var currentVar = _this.$vars[key] || "";
-            var partMatch = part.match(_this.regex(currentVar));
-            matches = matches && ((currentVar === part) || (partMatch && partMatch.length > 0));
+            var matchVar = _this.$regexp.exec(currentVar) || [];
+            var partMatch = ((_a = part.match(_this.regex(matchVar[0]))) === null || _a === void 0 ? void 0 : _a.length) > 0;
+            matches = matches && (currentVar === part || partMatch);
         });
         return matches;
     };
@@ -349,6 +350,9 @@ var Pathfinder = /** @class */ (function () {
      */
     Pathfinder.prototype.regex = function (name) {
         var pattern = "([^\/]+)";
+        if (typeof name === "undefined") {
+            return null;
+        }
         if (typeof this.$patterns[name] === "string") {
             pattern = this.$patterns[name];
         }
