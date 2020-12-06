@@ -15,23 +15,28 @@
   </a>
 </p>
 
-> KnuckJS is a Simple JavaScript Framework to build lightning fast SPAs using any template engine [Homepage](https://github.com/elcharitas/knuckjs#readme)
+> KnuckJS is a Simple and lightweight JavaScript Framework to build lightning fast SPAs using any template engine [Learn more](https://knuck.js.org)
 
 ## Install
 
-Installing knuckjs is effortless you can choose to install using npm as a dependency
+Installing knuckjs is effortless as you can choose to install it as a dependency using npm or yarn
+
 ```sh
 npm i knuckjs
+---- or ----
+yarn add knuckjs
 ```
-or directly include using jsDelivr
+
+or directly include using a CDN like jsDelivr
 ```html
 <script src="https://cdn.jsdelivr.net/npm/knuckjs@0.0.2/dist/knuck.min.js"></script>
 ```
 
 ## Sample Usage
-Here is a sample Hello world in KnuckJS. Full documentation available here.
+Here is a sample Hello Knuck. Full documentation available [here](https://knuck.js.org/docs/latest).
 ```ts
-import Knuck from "knuckjs";
+// Hello Knuck in Typescript
+import * as Knuck from "knuckjs";
 
 let app: Knuck = new Knuck(function create(Route){
     // tell knuck where to look
@@ -39,7 +44,7 @@ let app: Knuck = new Knuck(function create(Route){
 
     // listen for a path
     Route.get('/', function(someVar){
-        return "Hello World";
+        return "Hello Knuck";
     });
 
     // let's knuck this app out
@@ -49,9 +54,8 @@ let app: Knuck = new Knuck(function create(Route){
 
 ## Author
 
-**Jonathan Irhodia**
+**[Jonathan Irhodia](https://elcharitas.com.ng)**
 
-* Website: elcharitas.com.ng
 * Twitter: [@elcharitas](https://twitter.com/elcharitas)
 * Github: [@elcharitas](https://github.com/elcharitas)
 

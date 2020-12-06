@@ -71,13 +71,13 @@ export = class Knuck
      * @param callback
      * @returns void
      */
-    public render(currentRoute: any, callback?: (content: any) => any): void
+    public render(currentRoute: any, callback?: (resolve: Resolver) => any): void
     {
-        callback = callback || (content => {
+        callback = callback || (resolve => {
             if (typeof document === "object") {
-                document.write(content);
+                document.write(resolve.content);
             } else {
-                console.log(content);
+                console.log(resolve);
             }
         });
 
@@ -94,7 +94,7 @@ export = class Knuck
      * @param callback
      * @returns void
      */
-    public run(callback?: (content: any) => any): void
+    public run(callback?: (resolve: Resolver) => any): void
     {
         let currentRoute = this.output();
 
