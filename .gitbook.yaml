@@ -1,0 +1,4 @@
+root: ./
+
+redirects:
+	author/elcharitas: https://elcharitas.com.ng
