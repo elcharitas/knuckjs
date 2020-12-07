@@ -102,6 +102,7 @@ declare module "errors/instance" {
 declare module "errors/index" {
     import BaseError from "errors/base";
     import InstanceError from "errors/instance";
+    /** The complete error types */
     export { BaseError as Error, InstanceError, };
 }
 declare module "utils/index" {
@@ -363,7 +364,7 @@ declare module "resolve/index" {
         });
     }
 }
-declare module "knuckjs" {
+declare module "index" {
     import Pathfinder from "paths/index";
     import Resolver from "resolve/index";
     const _default: {

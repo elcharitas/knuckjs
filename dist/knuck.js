@@ -67,7 +67,7 @@ var BaseError = /** @class */ (function (_super) {
          *
          * @var string
          */
-        _this.helplink = "https://knuck.js.org/errors";
+        _this.helplink = "https://knuck.js.org/guide/errors";
         _this.name = _this.prefix + ("[" + _this.typeCode + "]");
         if (typeof msg !== "undefined") {
             _this.message = msg + ".\nCheck \"" + _this.helplink + "\" for more help!";
@@ -170,7 +170,7 @@ var InstanceError = /** @class */ (function (_super) {
          *
          * @var string
          */
-        _this.helplink = "https://knuck.js.org/errors/instance";
+        _this.helplink = "https://knuck.js.org/guide/errors/instance";
         _super.prototype.setMessage.call(_this, name + " must be " + ((type !== "defined" ? "of type " : "") + type));
         return _this;
     }
@@ -299,6 +299,7 @@ module.exports = /** @class */ (function () {
 },{"./controller":1,"./paths":6,"./resolve":7,"./router":8,"./utils":9}],6:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var utils_1 = require("../utils");
 /** Path discovery and manager */
 var Pathfinder = /** @class */ (function () {
     /**
@@ -319,6 +320,9 @@ var Pathfinder = /** @class */ (function () {
          * @var object
          */
         this.$patterns = {};
+        if (typeof path !== "string") {
+            utils_1.debug("19400", "Invalid Path type, use string instead");
+        }
         this.$vars = path.split("/");
         this.$varNames = this.$regexp.exec(path) || [];
         if (typeof realpath === "string") {
@@ -442,7 +446,7 @@ var Pathfinder = /** @class */ (function () {
 }());
 exports.default = Pathfinder;
 
-},{}],7:[function(require,module,exports){
+},{"../utils":9}],7:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {

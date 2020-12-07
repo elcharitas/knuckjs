@@ -10,7 +10,7 @@
     "build-amd": "tsc -b tsconfig-amd.json",
     "types": "mv dist/knuck.amd.d.ts types.d.ts",
     "package": "browserify lib/index.js -s Knuck -o dist/knuck.js && uglifyjs -c -m -o dist/knuck.min.js dist/knuck.js",
-    "prepublishOnly": "npm run build && npm run build-amd && npm run types && npm run package"
+    "bundle": "npm run build && npm run build-amd && npm run types && npm run package"
   },
   "author": "Jonathan Irhodia",
   "license": "MIT",

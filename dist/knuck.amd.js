@@ -95,7 +95,7 @@ define("errors/base", ["require", "exports", "utils/index"], function (require, 
              *
              * @var string
              */
-            _this.helplink = "https://knuck.js.org/errors";
+            _this.helplink = "https://knuck.js.org/guide/errors";
             _this.name = _this.prefix + ("[" + _this.typeCode + "]");
             if (typeof msg !== "undefined") {
                 _this.message = msg + ".\nCheck \"" + _this.helplink + "\" for more help!";
@@ -170,7 +170,7 @@ define("errors/instance", ["require", "exports", "errors/base"], function (requi
              *
              * @var string
              */
-            _this.helplink = "https://knuck.js.org/errors/instance";
+            _this.helplink = "https://knuck.js.org/guide/errors/instance";
             _super.prototype.setMessage.call(_this, name + " must be " + ((type !== "defined" ? "of type " : "") + type));
             return _this;
         }
@@ -364,7 +364,7 @@ define("router/index", ["require", "exports", "controller/index", "utils/index"]
     }());
     exports.default = Route;
 });
-define("paths/index", ["require", "exports"], function (require, exports) {
+define("paths/index", ["require", "exports", "utils/index"], function (require, exports, utils_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     /** Path discovery and manager */
@@ -387,6 +387,9 @@ define("paths/index", ["require", "exports"], function (require, exports) {
              * @var object
              */
             this.$patterns = {};
+            if (typeof path !== "string") {
+                utils_3.debug("19400", "Invalid Path type, use string instead");
+            }
             this.$vars = path.split("/");
             this.$varNames = this.$regexp.exec(path) || [];
             if (typeof realpath === "string") {
