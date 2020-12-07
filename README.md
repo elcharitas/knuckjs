@@ -1,25 +1,76 @@
-# Introduction
+<h1 align="center">👋 KnuckJS</h1>
+<p>
+  <img alt="Version" src="https://img.shields.io/badge/version-0.0.4-blue.svg?cacheSeconds=2592000" />
+  <a href="https://github.com/elcharitas/knuckjs#readme" target="_blank">
+    <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
+  </a>
+  <a href="https://github.com/elcharitas/knuckjs/graphs/commit-activity" target="_blank">
+    <img alt="Maintenance" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" />
+  </a>
+  <a href="https://github.com/elcharitas/knuckjs/blob/master/LICENSE" target="_blank">
+    <img alt="License: MIT" src="https://img.shields.io/github/license/elcharitas/knuckjs" />
+  </a>
+  <a href="https://twitter.com/elcharitas" target="_blank">
+    <img alt="Twitter: elcharitas" src="https://img.shields.io/twitter/follow/elcharitas.svg?style=social" />
+  </a>
+</p>
 
-## Getting Super Powers
+> KnuckJS is a Simple and lightweight JavaScript Framework to build lightning fast SPAs using any template engine [Learn more](https://knuck.js.org)
 
-Becoming a super hero is a fairly straight forward process:
+## Install
 
+Installing knuckjs is effortless as you can choose to install it as a dependency using npm or yarn
+
+``` bash
+npm i knuckjs
+---- or ----
+yarn add knuckjs
 ```
-$ give me super-powers
+
+or directly include using a CDN like jsDelivr
+``` html
+<script src="https://cdn.jsdelivr.net/npm/knuckjs@0.0.4/dist/knuck.min.js"></script>
 ```
 
-{% hint style="info" %}
- Super-powers are granted randomly so please submit an issue if you're not happy with yours.
-{% endhint %}
+## Sample Usage
+Here is a sample `Hello Knuck` app. Full documentation is available [here](https://knuck.js.org/docs/latest).
+``` ts
+// Hello Knuck in Typescript
+import * as Knuck from "knuckjs";
 
-Once you're strong enough, save the world:
+let app: Knuck = new Knuck(function create(Route){
+    // tell knuck where to look
+    this.realpath = location.pathname;
 
-{% code title="hello.sh" %}
-```bash
-# Ain't no code for that yet, sorry
-echo 'You got to trust me on this, I saved the world'
+    // listen for a path
+    Route.get('/', function(someVar){
+        return "Hello Knuck";
+    });
+
+    // let's knuck this app out
+    this.run();
+});
 ```
-{% endcode %}
 
+## Author
 
+**[Jonathan Irhodia](https://elcharitas.com.ng)**
 
+* Twitter: [@elcharitas](https://twitter.com/elcharitas)
+* Github: [@elcharitas](https://github.com/elcharitas)
+
+## Contributing
+
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/elcharitas/knuckjs/issues). You can also take a look at the [contributing guide](https://github.com/elcharitas/knuckjs/blob/master/CONTRIBUTING.md).
+
+## Show your support
+
+Give a ⭐️ if this project helped you!
+
+## License
+
+Copyright © 2020 [Jonathan Irhodia](https://github.com/elcharitas).<br />
+This project is [MIT](https://github.com/elcharitas/knuckjs/blob/master/LICENSE) licensed.
+
+***
+_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
