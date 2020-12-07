@@ -546,7 +546,7 @@ define("resolve/index", ["require", "exports", "controller/index", "paths/index"
     }(controller_2.default));
     exports.default = Resolver;
 });
-define("index", ["require", "exports", "router/index", "controller/index", "paths/index", "resolve/index", "utils/index"], function (require, exports, router_1, controller_3, paths_2, resolve_1, Util) {
+define("knuckjs", ["require", "exports", "router/index", "controller/index", "paths/index", "resolve/index", "utils/index"], function (require, exports, router_1, controller_3, paths_2, resolve_1, Util) {
     "use strict";
     router_1 = __importDefault(router_1);
     controller_3 = __importDefault(controller_3);

@@ -1,6 +1,6 @@
-import Knuck from "./lib";
+import Knuck from "./lib/knuckjs";
 
-let app: Knuck = new Knuck(function create(Route){
+let app = new Knuck(function create(Route){
     // original path
     this.realpath = "/";
     // KnuckJS supports patterns!
