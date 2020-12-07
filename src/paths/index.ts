@@ -1,3 +1,5 @@
+import { debug } from "../utils";
+
 /** Path discovery and manager */
 export default class Pathfinder
 {
@@ -43,6 +45,11 @@ export default class Pathfinder
      */
     constructor(path: string, realpath?: string)
     {
+        if (typeof path !== "string")
+        {
+            debug("19400", "Invalid Path type, use string instead");
+        }
+        
         this.$vars = path.split("/");
         this.$varNames = this.$regexp.exec(path) || [];
 

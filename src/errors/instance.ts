@@ -31,7 +31,7 @@ class InstanceError extends BaseError
      * 
      * @var string
      */
-    public helplink: string = "https://knuck.js.org/errors/instance";
+    public helplink: string = "https://knuck.js.org/guide/errors/instance";
 
     /**
      * Initialize the new error

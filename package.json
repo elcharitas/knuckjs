@@ -1,6 +1,6 @@
 {
   "name": "knuckjs",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Simple JavaScript Framework to build lightning fast SPAs using any template engine",
   "main": "./lib/index.js",
   "typings": "./types.d.ts",

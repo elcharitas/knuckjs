@@ -1,6 +1,6 @@
 <h1 align="center">👋 KnuckJS</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-0.0.4-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-0.0.5-blue.svg?cacheSeconds=2592000" />
   <a href="https://github.com/elcharitas/knuckjs#readme" target="_blank">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
   </a>
@@ -29,7 +29,7 @@ yarn add knuckjs
 
 or directly include using a CDN like jsDelivr
 ``` html
-<script src="https://cdn.jsdelivr.net/npm/knuckjs@0.0.4/dist/knuck.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/knuckjs@0.0.5/dist/knuck.min.js"></script>
 ```
 
 ## Sample Usage

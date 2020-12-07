@@ -31,7 +31,7 @@ class BaseError extends Error
      * 
      * @var string
      */
-    public helplink: string = "https://knuck.js.org/errors";
+    public helplink: string = "https://knuck.js.org/guide/errors";
 
     /**
      * Prepares the error message
