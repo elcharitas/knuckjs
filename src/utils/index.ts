@@ -4,17 +4,17 @@ import * as Debug from "../errors";
  * Tentatively capitalize first word in text
  * 
  * @param text 
- * @param del
+ * @param delimiter
  * @returns string
  */
-let capslock = (text: string, del: string = " "): string => {
-    let words: string[] = text.split(del);
+let capslock = (text: string, delimiter: string = " "): string => {
+    let words: string[] = text.split(delimiter);
     words.forEach((word, index) => {
         let chars: string[] = word.split("");
         chars[0] = chars[0].toUpperCase();
         words[index] = chars.join("");
     });
-    return words.join(del);
+    return words.join(delimiter);
 }
 
 /**
@@ -40,7 +40,6 @@ let watchPrefix = (text: string, prefix: string): string => {
  * @returns void
  */
 let debug = (errorType: string, ...args: Array<string>): void => {
-    let debugkit: Debug.Error;
     for (let catcher in Debug)
     {
         if (! (catcher in new Object) && Debug[catcher].typeCode == errorType)

@@ -61,14 +61,11 @@ export default class Pathfinder
     {
         let matches: boolean = this.$parts.length >= this.$vars.length;
 
-        this.$parts.forEach((part, key) => {
+        return matches && this.$parts.every((part, key): boolean => {
             let currentVar: string = this.$vars[key] || "";
             let matchVar: RegExpMatchArray = this.$regexp.exec(currentVar) || [];
-            let partMatch: boolean = part.match(this.regex(matchVar[0]))?.length > 0;
-            matches = matches && (currentVar === part || partMatch);
+            return currentVar === part || part.match(this.regex(matchVar[0]))?.length > 0;
         });
-
-        return matches;
     }
     
     /**

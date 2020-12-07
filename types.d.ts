@@ -109,10 +109,10 @@ declare module "utils/index" {
      * Tentatively capitalize first word in text
      *
      * @param text
-     * @param del
+     * @param delimiter
      * @returns string
      */
-    let capslock: (text: string, del?: string) => string;
+    let capslock: (text: string, delimiter?: string) => string;
     /**
      * Prepend prefix to text if not already Prepended
      *
@@ -363,7 +363,7 @@ declare module "resolve/index" {
         });
     }
 }
-declare module "index" {
+declare module "knuckjs" {
     import Pathfinder from "paths/index";
     import Resolver from "resolve/index";
     const _default: {

@@ -333,14 +333,12 @@ var Pathfinder = /** @class */ (function () {
     Pathfinder.prototype.matches = function () {
         var _this = this;
         var matches = this.$parts.length >= this.$vars.length;
-        this.$parts.forEach(function (part, key) {
+        return matches && this.$parts.every(function (part, key) {
             var _a;
             var currentVar = _this.$vars[key] || "";
             var matchVar = _this.$regexp.exec(currentVar) || [];
-            var partMatch = ((_a = part.match(_this.regex(matchVar[0]))) === null || _a === void 0 ? void 0 : _a.length) > 0;
-            matches = matches && (currentVar === part || partMatch);
+            return currentVar === part || ((_a = part.match(_this.regex(matchVar[0]))) === null || _a === void 0 ? void 0 : _a.length) > 0;
         });
-        return matches;
     };
     /**
      * Gets the regex for a pattern name
@@ -645,18 +643,18 @@ var Debug = __importStar(require("../errors"));
  * Tentatively capitalize first word in text
  *
  * @param text
- * @param del
+ * @param delimiter
  * @returns string
  */
-var capslock = function (text, del) {
-    if (del === void 0) { del = " "; }
-    var words = text.split(del);
+var capslock = function (text, delimiter) {
+    if (delimiter === void 0) { delimiter = " "; }
+    var words = text.split(delimiter);
     words.forEach(function (word, index) {
         var chars = word.split("");
         chars[0] = chars[0].toUpperCase();
         words[index] = chars.join("");
     });
-    return words.join(del);
+    return words.join(delimiter);
 };
 exports.capslock = capslock;
 /**
@@ -686,7 +684,6 @@ var debug = function (errorType) {
     for (var _i = 1; _i < arguments.length; _i++) {
         args[_i - 1] = arguments[_i];
     }
-    var debugkit;
     for (var catcher in Debug) {
         if (!(catcher in new Object) && Debug[catcher].typeCode == errorType) {
             throw new ((_a = Debug[catcher]).bind.apply(_a, __spreadArrays([void 0], args)))();
