@@ -477,44 +477,81 @@ define("types", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
 });
-define("controller/control", ["require", "exports"], function (require, exports) {
+define("controller/control", ["require", "exports", "utils/index"], function (require, exports, utils_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    /**  */
     var Control = /** @class */ (function () {
         function Control() {
-            this.$middlewares = [
-                {
-                    name: 'final',
-                    callback: function () {
-                        return true;
-                    }
-                }
-            ];
         }
+        /**
+         * Performs redirection
+         *
+         * @param path
+         * @returns string
+         */
         Control.prototype.redirect = function (path) {
             return this.$instance['realpath'] = path;
         };
+        /**
+         * Evaluates one or more middlewares.
+         * returns true on success, otherwise false
+         *
+         * @param names
+         * @returns boolean
+         */
         Control.prototype.middleware = function (names) {
             var _this = this;
             if (names.constructor !== Array) {
                 names = [names];
             }
             return names.every(function (name, key) {
-                return _this.getMiddleware(name)(_this.getMiddleware(names[key + 1] || "final"));
+                return _this.getMiddleware(name)(_this.getMiddleware(names[key + 1] || null) || (function () { return true; }));
             });
         };
+        /**
+         * Regiters a middleware into current control
+         *
+         * @param name
+         * @param callback
+         * @returns void
+         */
         Control.prototype.registerMiddleware = function (name, callback) {
+            if (typeof name !== "string") {
+                utils_3.debug("19400", "name: \"" + name + "\" must be a string");
+            }
+            if (!this.$middlewares) {
+                this.$middlewares = [];
+            }
             this.$middlewares.push({ name: name, callback: callback });
         };
+        /**
+         * Sets the global instance
+         *
+         * @param instance
+         * @returns instance
+         */
         Control.prototype.setInstance = function (instance) {
             return this.$instance = instance;
         };
+        /**
+         * Gets the global instance
+         *
+         * @returns instance
+         */
         Control.prototype.getInstance = function () {
             return this.$instance || this;
         };
+        /**
+         * Gets a middleware callback by its name
+         *
+         * @param name
+         * @returns middleware
+         */
         Control.prototype.getMiddleware = function (name) {
-            var middleware;
-            this.$middlewares.forEach(function (ware) {
+            var _a;
+            var middleware = null;
+            (_a = this.$middlewares) === null || _a === void 0 ? void 0 : _a.forEach(function (ware) {
                 if (ware.name === name) {
                     middleware = ware.callback;
                 }
@@ -525,7 +562,7 @@ define("controller/control", ["require", "exports"], function (require, exports)
     }());
     exports.default = Control;
 });
-define("controller/index", ["require", "exports", "controller/control", "utils/index"], function (require, exports, control_1, utils_3) {
+define("controller/index", ["require", "exports", "controller/control", "utils/index"], function (require, exports, control_1, utils_4) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     control_1 = __importDefault(control_1);
@@ -553,7 +590,7 @@ define("controller/index", ["require", "exports", "controller/control", "utils/i
         Controller.prototype.view = function (templateName, context) {
             var _a;
             if (typeof window === "object" && typeof window["nunjucks"] === "object") {
-                templateName = utils_3.watchSuffix(templateName, ".njk");
+                templateName = utils_4.watchSuffix(templateName, ".njk");
                 return (_a = window["nunjucks"]) === null || _a === void 0 ? void 0 : _a.render(templateName, context);
             }
             return null;
@@ -562,7 +599,7 @@ define("controller/index", ["require", "exports", "controller/control", "utils/i
     }(control_1.default));
     exports.default = Controller;
 });
-define("router/instance", ["require", "exports", "controller/index", "utils/index"], function (require, exports, controller_2, utils_4) {
+define("router/instance", ["require", "exports", "controller/index", "utils/index"], function (require, exports, controller_2, utils_5) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     controller_2 = __importDefault(controller_2);
@@ -608,7 +645,7 @@ define("router/instance", ["require", "exports", "controller/index", "utils/inde
                 this.getInstance().$routes.push({ path: path, controller: controller, method: method });
             }
             else if (typeof controllerOrCallback !== "function") {
-                return utils_4.debug("19458", "controllerOrCallback", "function");
+                return utils_5.debug("19458", "controllerOrCallback", "function");
             }
             else {
                 var callback = controllerOrCallback;
@@ -700,7 +737,7 @@ define("router/index", ["require", "exports", "router/instance"], function (requ
     }(instance_2.default));
     exports.default = Route;
 });
-define("knuckjs", ["require", "exports", "router/index", "controller/index", "paths/index", "resolve/index", "utils/index"], function (require, exports, router_1, controller_3, paths_2, resolve_1, utils_5) {
+define("knuckjs", ["require", "exports", "router/index", "controller/index", "paths/index", "resolve/index", "utils/index"], function (require, exports, router_1, controller_3, paths_2, resolve_1, utils_6) {
     "use strict";
     router_1 = __importDefault(router_1);
     controller_3 = __importDefault(controller_3);
@@ -740,7 +777,7 @@ define("knuckjs", ["require", "exports", "router/index", "controller/index", "pa
             var routes = router_1.default.getInstance().all();
             var currentRoute;
             routes.forEach(function (route) {
-                var path = new paths_2.default(utils_5.watchPrefix(route.path, _this.prefix), _this.realpath);
+                var path = new paths_2.default(utils_6.watchPrefix(route.path, _this.prefix), _this.realpath);
                 path.setPatterns(router_1.default.getPatterns());
                 if (path.matches()) {
                     currentRoute = { route: route, path: path };
@@ -760,7 +797,7 @@ define("knuckjs", ["require", "exports", "router/index", "controller/index", "pa
             if (currentRoute === void 0) { currentRoute = this.output(); }
             if (forceRender === void 0) { forceRender = false; }
             if (((_a = router_1.default.currentRoute) === null || _a === void 0 ? void 0 : _a.path) === (currentRoute === null || currentRoute === void 0 ? void 0 : currentRoute.route.path) && forceRender !== true) {
-                utils_5.debug("19460", "path", (_b = router_1.default.currentRoute) === null || _b === void 0 ? void 0 : _b.path);
+                utils_6.debug("19460", "path", (_b = router_1.default.currentRoute) === null || _b === void 0 ? void 0 : _b.path);
             }
             callback = callback || (function (resolve) {
                 if (typeof document === "object") {
@@ -771,7 +808,7 @@ define("knuckjs", ["require", "exports", "router/index", "controller/index", "pa
                 }
             });
             if (typeof callback !== "function") {
-                utils_5.debug("19458", "callback", "function");
+                utils_6.debug("19458", "callback", "function");
             }
             if ((currentRoute === null || currentRoute === void 0 ? void 0 : currentRoute.path) instanceof paths_2.default) {
                 router_1.default.currentRoute = currentRoute.route;

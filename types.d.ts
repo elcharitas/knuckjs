@@ -300,8 +300,15 @@ declare module "types" {
     import Controller from "controller/index";
     import Pathfinder from "paths/index";
     import Resolver from "resolve/index";
+    /** Type definition for route callback */
     type routeCallback = (resolve: Resolver) => any;
+    /** Type definition for middleware callback */
     type middleware = (next: middleware) => boolean;
+    /** Type definition for single middleware */
+    type middlewareRecord = {
+        name: string;
+        callback: middleware;
+    };
     /** Type definition for single route */
     type route = {
         path: string;
@@ -323,22 +330,66 @@ declare module "types" {
     };
     /** Type definition for list of patterns */
     type routePatternList = Array<routePattern>;
-    export { route, routeList, routePack, routeCallback, routePattern, routePatternList, middleware };
+    export { route, routeList, routePack, routeCallback, routePattern, routePatternList, middleware, middlewareRecord };
 }
 declare module "controller/control" {
-    import { middleware } from "types";
+    import { middleware, middlewareRecord } from "types";
+    /**  */
     export default class Control {
-        protected $middlewares: Array<{
-            name: string;
-            callback: middleware;
-        }>;
+        /**
+         * List of Middleware records
+         *
+         * @var middlewareRecord[]
+         */
+        protected $middlewares: Array<middlewareRecord>;
+        /**
+         * The definitive global instance
+         *
+         * @var this
+         */
         protected $instance: this;
-        constructor();
+        /**
+         * Performs redirection
+         *
+         * @param path
+         * @returns string
+         */
         redirect(path: string): string;
+        /**
+         * Evaluates one or more middlewares.
+         * returns true on success, otherwise false
+         *
+         * @param names
+         * @returns boolean
+         */
         middleware(names: string | string[]): boolean;
+        /**
+         * Regiters a middleware into current control
+         *
+         * @param name
+         * @param callback
+         * @returns void
+         */
         registerMiddleware(name: string, callback: middleware): void;
+        /**
+         * Sets the global instance
+         *
+         * @param instance
+         * @returns instance
+         */
         setInstance(instance: this): this;
+        /**
+         * Gets the global instance
+         *
+         * @returns instance
+         */
         getInstance(): this;
+        /**
+         * Gets a middleware callback by its name
+         *
+         * @param name
+         * @returns middleware
+         */
         protected getMiddleware(name: string): middleware;
     }
 }
