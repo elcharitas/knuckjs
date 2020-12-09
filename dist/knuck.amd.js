@@ -452,19 +452,19 @@ define("resolve/index", ["require", "exports", "controller/index", "paths/index"
          *
          * @param currentRoute
          */
-        function Resolver(currentRoute) {
+        function Resolver(currentRoute, instance) {
             var _a;
             var _this = this;
-            var path = currentRoute.path;
-            var route = currentRoute.route;
+            var path = currentRoute.path, route = currentRoute.route;
             _this = _super.call(this) || this;
             _this.pathName = path.getPath();
+            _this.setInstance(instance);
             if (path instanceof paths_1.default) {
                 if (route.callback) {
                     _this.content = route.callback.apply(_this, path.getVarsList());
                 }
                 else if (route.controller) {
-                    _this.content = (_a = route.controller).invoke.apply(_a, path.getVarsList());
+                    _this.content = (_a = route.controller.setInstance(_this.getInstance())).invoke.apply(_a, path.getVarsList());
                 }
             }
             return _this;
@@ -532,7 +532,7 @@ define("controller/control", ["require", "exports", "utils/index"], function (re
          * @returns instance
          */
         Control.prototype.setInstance = function (instance) {
-            return this.$instance = instance;
+            return this.$instance = instance || this;
         };
         /**
          * Gets the global instance
@@ -578,6 +578,10 @@ define("controller/index", ["require", "exports", "controller/control", "utils/i
          * @returns string
          */
         Controller.prototype.invoke = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
             return this.view("index");
         };
         /**

@@ -9,7 +9,7 @@ export default class Controller extends Control
      * 
      * @returns string
      */
-    public invoke(): string
+    public invoke(...args): string
     {
         return this.view("index");
     }

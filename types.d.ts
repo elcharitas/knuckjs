@@ -271,7 +271,7 @@ declare module "paths/index" {
 }
 declare module "resolve/index" {
     import Controller from "controller/index";
-    import Pathfinder from "paths/index";
+    import { routePack } from "types";
     export default class Resolver extends Controller {
         /**
          * Route specific received response
@@ -290,10 +290,7 @@ declare module "resolve/index" {
          *
          * @param currentRoute
          */
-        constructor(currentRoute: {
-            route: any;
-            path: Pathfinder;
-        });
+        constructor(currentRoute: routePack, instance?: any);
     }
 }
 declare module "types" {
@@ -301,7 +298,9 @@ declare module "types" {
     import Pathfinder from "paths/index";
     import Resolver from "resolve/index";
     /** Type definition for route callback */
-    type routeCallback = (resolve: Resolver) => any;
+    type routeCallback = (resolve?: Resolver) => any;
+    /** Type definition for route callback */
+    type routeHandle = (...args: any[]) => any;
     /** Type definition for middleware callback */
     type middleware = (next: middleware) => boolean;
     /** Type definition for single middleware */
@@ -314,7 +313,7 @@ declare module "types" {
         path: string;
         method: string;
         controller?: Controller;
-        callback?: routeCallback;
+        callback?: routeHandle;
     };
     /** Type definition for route packs */
     type routePack = {
@@ -330,7 +329,7 @@ declare module "types" {
     };
     /** Type definition for list of patterns */
     type routePatternList = Array<routePattern>;
-    export { route, routeList, routePack, routeCallback, routePattern, routePatternList, middleware, middlewareRecord };
+    export { route, routeList, routePack, routeHandle, routeCallback, routePattern, routePatternList, middleware, middlewareRecord };
 }
 declare module "controller/control" {
     import { middleware, middlewareRecord } from "types";
@@ -377,7 +376,7 @@ declare module "controller/control" {
          * @param instance
          * @returns instance
          */
-        setInstance(instance: this): this;
+        setInstance(instance?: this): this;
         /**
          * Gets the global instance
          *
@@ -402,7 +401,7 @@ declare module "controller/index" {
          *
          * @returns string
          */
-        invoke(): string;
+        invoke(...args: any[]): string;
         /**
          * Use to render nunjucks templates
          *
@@ -564,7 +563,7 @@ declare module "knuckjs" {
             redirect(path: string): string;
             middleware(names: string | string[]): boolean;
             registerMiddleware(name: string, callback: import("knuckjs/src/types").middleware): void;
-            setInstance(instance: any): any;
+            setInstance(instance?: any): any;
             getInstance(): any;
             getMiddleware(name: string): import("knuckjs/src/types").middleware;
         };

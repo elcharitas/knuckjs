@@ -77,9 +77,9 @@ export default class Control
      * @param instance
      * @returns instance
      */
-    public setInstance(instance: this): this
+    public setInstance(instance?: this): this
     {
-        return this.$instance = instance;
+        return this.$instance = instance || this;
     }
 
     /**

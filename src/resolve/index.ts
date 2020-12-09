@@ -1,5 +1,6 @@
 import Controller from "../controller";
 import Pathfinder from "../paths";
+import { routePack } from "../types";
 
 export default
 
@@ -24,15 +25,15 @@ class Resolver extends Controller
      * 
      * @param currentRoute 
      */
-    constructor(currentRoute: {route: any, path: Pathfinder})
+    constructor(currentRoute: routePack, instance?: any)
     {
-        let path = currentRoute.path;
-
-        let route = currentRoute.route;
+        let { path, route } = currentRoute;
 
         super();
 
         this.pathName = path.getPath();
+
+        this.setInstance(instance);
 
         if (path instanceof Pathfinder)
         {
@@ -42,7 +43,7 @@ class Resolver extends Controller
             }
             else if (route.controller)
             {
-                this.content = route.controller.invoke(...path.getVarsList());
+                this.content = route.controller.setInstance(this.getInstance()).invoke(...path.getVarsList());
             }
         }
     }

@@ -13,7 +13,7 @@ var app = new knuckjs_1.default(function create(Route) {
     // testing redirection...
     Route.get('/', function () {
         // redirect the app
-        _this.realpath = "/home";
+        _this.realpath = "/page";
         //this text won't show on fast networks
         return "Redirecting...";
     });

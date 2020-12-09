@@ -3,7 +3,10 @@ import Pathfinder from "./paths";
 import Resolver from "./resolve";
 
 /** Type definition for route callback */
-type routeCallback = (resolve: Resolver) => any;
+type routeCallback = (resolve?: Resolver) => any;
+
+/** Type definition for route callback */
+type routeHandle = (...args: any[]) => any;
 
 /** Type definition for middleware callback */
 type middleware = (next: middleware) => boolean;
@@ -12,7 +15,7 @@ type middleware = (next: middleware) => boolean;
 type middlewareRecord = { name: string, callback: middleware };
 
 /** Type definition for single route */
-type route = { path: string, method: string, controller?: Controller, callback?: routeCallback };
+type route = { path: string, method: string, controller?: Controller, callback?: routeHandle };
 
 /** Type definition for route packs */
 type routePack = { route: route, path: Pathfinder };
@@ -30,6 +33,7 @@ export {
     route,
     routeList,
     routePack,
+    routeHandle,
     routeCallback,
     routePattern,
     routePatternList,
