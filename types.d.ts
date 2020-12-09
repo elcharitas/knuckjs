@@ -559,6 +559,14 @@ declare module "knuckjs" {
              * @returns void
              */
             run(callback?: routeCallback): void;
+            $middlewares: import("knuckjs/src/types").middlewareRecord[];
+            $instance: any;
+            redirect(path: string): string;
+            middleware(names: string | string[]): boolean;
+            registerMiddleware(name: string, callback: import("knuckjs/src/types").middleware): void;
+            setInstance(instance: any): any;
+            getInstance(): any;
+            getMiddleware(name: string): import("knuckjs/src/types").middleware;
         };
     };
     /** Knucks is what handles the rest... */

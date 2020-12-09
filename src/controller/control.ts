@@ -26,7 +26,7 @@ export default class Control
      */
     public redirect(path: string): string
     {
-        return this.$instance['realpath'] = path;
+        return this.$instance["realpath"] = path;
     }
 
     

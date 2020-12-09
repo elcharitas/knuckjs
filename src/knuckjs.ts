@@ -1,12 +1,13 @@
 import Route from "./router";
 import Controller from "./controller";
+import Control from "./controller/control";
 import Pathfinder from "./paths";
 import Resolver from "./resolve";
 import { debug, watchPrefix } from "./utils";
 import { routePack, routeCallback } from "./types";
 
 /** Knucks is what handles the rest... */
-export = class Knuck
+export = class Knuck extends Control
 {
     /**
      * The realpath for the Application
@@ -30,6 +31,10 @@ export = class Knuck
      */
     constructor(callback?: (BaseRoute: typeof Route, BaseController: typeof Controller) => any)
     {
+        super();
+
+        this.setInstance(this);
+
         if (typeof callback === "function")
         {
             callback.apply(this, [Route, Controller])
@@ -43,10 +48,9 @@ export = class Knuck
      */
     public output(): routePack
     {
-        let routes = Route.getInstance().all();
-        let currentRoute: routePack;
+        let currentRoute: routePack = null;
 
-        routes.forEach(route => {
+        Route.getInstance().all().forEach(route => {
             let path = new Pathfinder(watchPrefix(route.path, this.prefix), this.realpath);
             path.setPatterns(Route.getPatterns());
             if (path.matches())
@@ -55,7 +59,7 @@ export = class Knuck
             }
         });
 
-        return currentRoute || null;
+        return currentRoute;
     }
 
     /**

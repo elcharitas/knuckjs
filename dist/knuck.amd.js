@@ -491,7 +491,7 @@ define("controller/control", ["require", "exports", "utils/index"], function (re
          * @returns string
          */
         Control.prototype.redirect = function (path) {
-            return this.$instance['realpath'] = path;
+            return this.$instance["realpath"] = path;
         };
         /**
          * Evaluates one or more middlewares.
@@ -737,13 +737,15 @@ define("router/index", ["require", "exports", "router/instance"], function (requ
     }(instance_2.default));
     exports.default = Route;
 });
-define("knuckjs", ["require", "exports", "router/index", "controller/index", "paths/index", "resolve/index", "utils/index"], function (require, exports, router_1, controller_3, paths_2, resolve_1, utils_6) {
+define("knuckjs", ["require", "exports", "router/index", "controller/index", "controller/control", "paths/index", "resolve/index", "utils/index"], function (require, exports, router_1, controller_3, control_2, paths_2, resolve_1, utils_6) {
     "use strict";
     router_1 = __importDefault(router_1);
     controller_3 = __importDefault(controller_3);
+    control_2 = __importDefault(control_2);
     paths_2 = __importDefault(paths_2);
     resolve_1 = __importDefault(resolve_1);
-    return /** @class */ (function () {
+    return /** @class */ (function (_super) {
+        __extends(Knuck, _super);
         /**
          * Provide an easy way to register routes et al.
          *
@@ -751,21 +753,24 @@ define("knuckjs", ["require", "exports", "router/index", "controller/index", "pa
          * @returns void
          */
         function Knuck(callback) {
+            var _this = _super.call(this) || this;
             /**
              * The realpath for the Application
              *
              * @var string
              */
-            this.realpath = "";
+            _this.realpath = "";
             /**
              * Watch out for realpath prefix
              *
              * @var string
              */
-            this.prefix = "/";
+            _this.prefix = "/";
+            _this.setInstance(_this);
             if (typeof callback === "function") {
-                callback.apply(this, [router_1.default, controller_3.default]);
+                callback.apply(_this, [router_1.default, controller_3.default]);
             }
+            return _this;
         }
         /**
          * Output the resolved routes
@@ -774,16 +779,15 @@ define("knuckjs", ["require", "exports", "router/index", "controller/index", "pa
          */
         Knuck.prototype.output = function () {
             var _this = this;
-            var routes = router_1.default.getInstance().all();
-            var currentRoute;
-            routes.forEach(function (route) {
+            var currentRoute = null;
+            router_1.default.getInstance().all().forEach(function (route) {
                 var path = new paths_2.default(utils_6.watchPrefix(route.path, _this.prefix), _this.realpath);
                 path.setPatterns(router_1.default.getPatterns());
                 if (path.matches()) {
                     currentRoute = { route: route, path: path };
                 }
             });
-            return currentRoute || null;
+            return currentRoute;
         };
         /**
          * Render the current route
@@ -827,5 +831,5 @@ define("knuckjs", ["require", "exports", "router/index", "controller/index", "pa
             setInterval(function () { return _this.render(callback); }, 5);
         };
         return Knuck;
-    }());
+    }(control_2.default));
 });
