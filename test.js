@@ -3,8 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var lib_1 = __importDefault(require("./lib"));
-var app = new lib_1.default(function create(Route) {
+var knuckjs_1 = __importDefault(require("./lib/knuckjs"));
+var app = new knuckjs_1.default(function create(Route) {
     var _this = this;
     // original path
     this.realpath = "/";

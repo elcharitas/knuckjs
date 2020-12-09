@@ -9,7 +9,7 @@ class BaseError extends Error
      * 
      * @var string
      */
-    public type: string = "ref";
+    public type: string = "reference";
 
     /**
      * Type code for the error

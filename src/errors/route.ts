@@ -1,37 +1,36 @@
 import BaseError from "./base";
 
 export default
-    
-class InstanceError extends BaseError
-{
+
+    class RouteError extends BaseError {
     /**
      * The type of The Error
      * 
      * @var string
      */
-    public type: string = "instance";
+    public type: string = "routes";
 
     /**
      * Type code for the error
      * 
      * @var number
      */
-    public static typeCode: number = 19458;
-    public typeCode: number = 19458;
+    public static typeCode: number = 19460;
+    public typeCode: number = 19460;
 
     /**
      * Error prefix for messages
      * 
      * @var string
      */
-    public prefix: string = "InstanceError";
+    public prefix: string = "RouteError";
 
     /**
      * Attached helplink for messages
      * 
      * @var string
      */
-    public helplink: string = "https://knuck.js.org/guide/errors/instance";
+    public helplink: string = "https://knuck.js.org/guide/errors/routes";
 
     /**
      * Initialize the new error
@@ -40,9 +39,8 @@ class InstanceError extends BaseError
      * @param type
      * @returns void
      */
-    constructor(name: string, type: string = "defined")
-    {
+    constructor(name: string, value: any, type: string = "unique") {
         super();
-        super.setMessage(`${name} must be ${(type !== "defined" ? "of type " : "") + type}`)
+        super.setMessage(`Route ${name}: "${value}" must be ${type}`)
     }
 }

@@ -1,52 +1,29 @@
-import Controller from "../controller";
-import { debug } from "../utils";
-
-type routeList = Array<{ path: string, method: string, controller?: Controller, callback?: () => any }>;
+import RouteInstance from "./instance";
+import { routePatternList } from "../types";
 
 /** App Route implemntation class */
-export default class Route
+export default
+
+class Route extends RouteInstance
 {
-    /**
-     * The Instance of Route
-     * 
-     * @var Route
-     */
-    protected $routes: routeList;
 
     /**
      * Patterns for Application's routes
      * 
-     * @var Array<{ name: string, pattern: string }>
+     * @var routePatternList
      */
-    protected $patterns: Array<{ name: string, pattern: string }> = [];
+    protected $patterns: routePatternList = [];
 
     /**
-     * The Instance of Route
-     * 
-     * @var Route
-     */
-    protected static $instance: Route;
-
-    /**
-     * Constructor for singleton routes class
+     * Declaring a private constructor ensures we have a singleton
      * 
      * @returns void
      */
     private constructor()
     {
-        this.$routes = [];
+        super();
     }
-
-    /**
-     * Returns a list of routes
-     * 
-     * @returns routeList
-     */
-    public all(): routeList
-    {
-        return this.$routes;
-    }
-
+    
     /**
      * Handle GET Requests
      * 
@@ -97,50 +74,12 @@ export default class Route
     }
 
     /**
-     * Instantiates or returns instance
-     * 
-     * @returns Route
-     */
-    public static getInstance()
-    {
-        if (!this.$instance) {
-            this.$instance = new Route;
-        }
-
-        return this.$instance;
-    }
-
-    /**
      * Returns a list of route Patterns
      * 
-     * @returns Array<{ name: string, pattern: string }>
+     * @returns routePatternList
      */
-    public static getPatterns(): Array<{ name: string, pattern: string }>
+    public static getPatterns(): routePatternList
     {
         return this.getInstance().$patterns;
-    }
-
-    /**
-     * Register new HTTP Requests
-     * 
-     * @param method
-     * @param path 
-     * @param controllerOrCallback
-     * @returns void
-     */
-    protected static register(method: string, path: string, controllerOrCallback: any): void
-    {
-        if (controllerOrCallback instanceof Controller) {
-            let controller: Controller = controllerOrCallback;
-            this.getInstance().$routes.push({ path, controller, method });
-        }
-        else if (typeof controllerOrCallback !== "function")
-        {
-            return debug("19458", "controllerOrCallback", "function");
-        }
-        else {
-            let callback = controllerOrCallback;
-            this.getInstance().$routes.push({ path, callback, method });
-        }
     }
 }

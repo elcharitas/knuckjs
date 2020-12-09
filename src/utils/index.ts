@@ -33,6 +33,20 @@ let watchPrefix = (text: string, prefix: string): string => {
 }
 
 /**
+ * Append suffix to text if not already appended
+ * 
+ * @param text 
+ * @param suffix
+ * @returns string
+ */
+let watchSuffix = (text: string, suffix: string): string => {
+    if (text.length !== text.indexOf(suffix) + suffix.length) {
+        return text.concat(suffix);
+    }
+    return text;
+}
+
+/**
  * Throw debug informations
  * 
  * @param errorType 
@@ -52,5 +66,6 @@ let debug = (errorType: string, ...args: Array<string>): void => {
 export {
     capslock,
     watchPrefix,
+    watchSuffix,
     debug
 }

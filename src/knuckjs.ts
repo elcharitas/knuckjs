@@ -2,18 +2,12 @@ import Route from "./router";
 import Controller from "./controller";
 import Pathfinder from "./paths";
 import Resolver from "./resolve";
-import * as Util from "./utils";
+import { debug, watchPrefix } from "./utils";
+import { routePack, routeCallback } from "./types";
 
 /** Knucks is what handles the rest... */
 export = class Knuck
 {
-    /**
-     * The Current Route object
-     * 
-     * @var object
-     */
-    public route: object;
-
     /**
      * The realpath for the Application
      * 
@@ -34,11 +28,11 @@ export = class Knuck
      * @param callback 
      * @returns void
      */
-    constructor(callback?: (Route: any, Controller: any, Util: object) => any)
+    constructor(callback?: (BaseRoute: typeof Route, BaseController: typeof Controller) => any)
     {
         if (typeof callback === "function")
         {
-            callback.apply(this, [Route, Controller, Util])
+            callback.apply(this, [Route, Controller])
         }
     }
     
@@ -47,17 +41,17 @@ export = class Knuck
      * 
      * @returns Resolve
      */
-    public output(): { route: any, path: Pathfinder }
+    public output(): routePack
     {
         let routes = Route.getInstance().all();
-        let currentRoute: { route: any, path: Pathfinder };
+        let currentRoute: routePack;
 
         routes.forEach(route => {
-            let path = new Pathfinder(Util.watchPrefix(route.path, this.prefix), this.realpath);
+            let path = new Pathfinder(watchPrefix(route.path, this.prefix), this.realpath);
             path.setPatterns(Route.getPatterns());
-            if(path.matches())
+            if (path.matches())
             {
-                currentRoute = {route, path};
+                currentRoute = { route, path };
             }
         });
 
@@ -71,8 +65,13 @@ export = class Knuck
      * @param callback
      * @returns void
      */
-    public render(currentRoute: any, callback?: (resolve: Resolver) => any): void
+    public render(callback?: routeCallback, currentRoute: routePack = this.output(), forceRender: boolean = false): void
     {
+        if ( Route.currentRoute?.path === currentRoute?.route.path && forceRender !== true)
+        {
+            debug("19460", "path", Route.currentRoute?.path);
+        }
+
         callback = callback || (resolve => {
             if (typeof document === "object") {
                 document.write(resolve.content);
@@ -81,9 +80,14 @@ export = class Knuck
             }
         });
 
+        if (typeof callback !== "function")
+        {
+            debug("19458", "callback", "function");
+        }
+
         if (currentRoute?.path instanceof Pathfinder)
         {
-            this.route = currentRoute.route;
+            Route.currentRoute = currentRoute.route;
             callback.apply(this, [new Resolver(currentRoute)]);
         }
     }
@@ -94,17 +98,10 @@ export = class Knuck
      * @param callback
      * @returns void
      */
-    public run(callback?: (resolve: Resolver) => any): void
+    public run(callback?: routeCallback): void
     {
-        let currentRoute = this.output();
+        this.render(callback);
 
-        this.render(currentRoute, callback);
-
-        setInterval(() => {
-            let newRoute = this.output();
-            if (newRoute?.route.path !== currentRoute?.route.path) {
-                this.render(currentRoute = newRoute, callback);
-            }
-        }, 5);
+        setInterval(() => this.render(callback), 5);
     }
 }

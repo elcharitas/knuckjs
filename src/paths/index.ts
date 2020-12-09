@@ -1,4 +1,5 @@
 import { debug } from "../utils";
+import { routePatternList } from "../types";
 
 /** Path discovery and manager */
 export default class Pathfinder
@@ -116,7 +117,7 @@ export default class Pathfinder
      * @param list 
      * @returns void
      */
-    public setPatterns(list: Array<{ name: string, pattern: string }>): void
+    public setPatterns(list: routePatternList): void
     {
         list.forEach(type => {
             this.setPattern(type.name, type.pattern)

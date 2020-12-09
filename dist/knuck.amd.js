@@ -40,30 +40,6 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
             r[k] = a[j];
     return r;
 };
-define("controller/index", ["require", "exports"], function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    var Controller = /** @class */ (function () {
-        function Controller() {
-        }
-        /**
-         * Use to render nunjucks templates
-         *
-         * @param templateName
-         * @param context
-         * @returns string
-         */
-        Controller.prototype.view = function (templateName, context) {
-            var _a;
-            if (typeof window === "object" && typeof window["nunjucks"] === "object") {
-                return (_a = window["nunjucks"]) === null || _a === void 0 ? void 0 : _a.render(templateName, context);
-            }
-            return null;
-        };
-        return Controller;
-    }());
-    exports.default = Controller;
-});
 define("errors/base", ["require", "exports", "utils/index"], function (require, exports, utils_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -82,7 +58,7 @@ define("errors/base", ["require", "exports", "utils/index"], function (require, 
              *
              * @var string
              */
-            _this.type = "ref";
+            _this.type = "reference";
             _this.typeCode = 19400;
             /**
              * Error prefix for messages
@@ -157,7 +133,7 @@ define("errors/instance", ["require", "exports", "errors/base"], function (requi
              *
              * @var string
              */
-            _this.type = "ref";
+            _this.type = "instance";
             _this.typeCode = 19458;
             /**
              * Error prefix for messages
@@ -184,19 +160,69 @@ define("errors/instance", ["require", "exports", "errors/base"], function (requi
     }(base_1.default));
     exports.default = InstanceError;
 });
-define("errors/index", ["require", "exports", "errors/base", "errors/instance"], function (require, exports, base_2, instance_1) {
+define("errors/route", ["require", "exports", "errors/base"], function (require, exports, base_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.InstanceError = exports.Error = void 0;
     base_2 = __importDefault(base_2);
+    var RouteError = /** @class */ (function (_super) {
+        __extends(RouteError, _super);
+        /**
+         * Initialize the new error
+         *
+         * @param name
+         * @param type
+         * @returns void
+         */
+        function RouteError(name, value, type) {
+            if (type === void 0) { type = "unique"; }
+            var _this = _super.call(this) || this;
+            /**
+             * The type of The Error
+             *
+             * @var string
+             */
+            _this.type = "routes";
+            _this.typeCode = 19460;
+            /**
+             * Error prefix for messages
+             *
+             * @var string
+             */
+            _this.prefix = "RouteError";
+            /**
+             * Attached helplink for messages
+             *
+             * @var string
+             */
+            _this.helplink = "https://knuck.js.org/guide/errors/routes";
+            _super.prototype.setMessage.call(_this, "Route " + name + ": \"" + value + "\" must be " + type);
+            return _this;
+        }
+        /**
+         * Type code for the error
+         *
+         * @var number
+         */
+        RouteError.typeCode = 19460;
+        return RouteError;
+    }(base_2.default));
+    exports.default = RouteError;
+});
+define("errors/index", ["require", "exports", "errors/base", "errors/instance", "errors/route"], function (require, exports, base_3, instance_1, route_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.RouteError = exports.InstanceError = exports.Error = void 0;
+    base_3 = __importDefault(base_3);
     instance_1 = __importDefault(instance_1);
-    exports.Error = base_2.default;
+    route_1 = __importDefault(route_1);
+    exports.Error = base_3.default;
     exports.InstanceError = instance_1.default;
+    exports.RouteError = route_1.default;
 });
 define("utils/index", ["require", "exports", "errors/index"], function (require, exports, Debug) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.debug = exports.watchPrefix = exports.capslock = void 0;
+    exports.debug = exports.watchSuffix = exports.watchPrefix = exports.capslock = void 0;
     Debug = __importStar(Debug);
     /**
      * Tentatively capitalize first word in text
@@ -231,6 +257,20 @@ define("utils/index", ["require", "exports", "errors/index"], function (require,
     };
     exports.watchPrefix = watchPrefix;
     /**
+     * Append suffix to text if not already appended
+     *
+     * @param text
+     * @param suffix
+     * @returns string
+     */
+    var watchSuffix = function (text, suffix) {
+        if (text.length !== text.indexOf(suffix) + suffix.length) {
+            return text.concat(suffix);
+        }
+        return text;
+    };
+    exports.watchSuffix = watchSuffix;
+    /**
      * Throw debug informations
      *
      * @param errorType
@@ -251,120 +291,7 @@ define("utils/index", ["require", "exports", "errors/index"], function (require,
     };
     exports.debug = debug;
 });
-define("router/index", ["require", "exports", "controller/index", "utils/index"], function (require, exports, controller_1, utils_2) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    controller_1 = __importDefault(controller_1);
-    /** App Route implemntation class */
-    var Route = /** @class */ (function () {
-        /**
-         * Constructor for singleton routes class
-         *
-         * @returns void
-         */
-        function Route() {
-            /**
-             * Patterns for Application's routes
-             *
-             * @var Array<{ name: string, pattern: string }>
-             */
-            this.$patterns = [];
-            this.$routes = [];
-        }
-        /**
-         * Returns a list of routes
-         *
-         * @returns routeList
-         */
-        Route.prototype.all = function () {
-            return this.$routes;
-        };
-        /**
-         * Handle GET Requests
-         *
-         * @param path
-         * @param controllerOrCallback
-         * @returns void
-         */
-        Route.get = function (path, controllerOrCallback) {
-            this.register("GET", path, controllerOrCallback);
-        };
-        /**
-         * Handle POST Requests
-         *
-         * @param path
-         * @param controllerOrCallback
-         * @returns void
-         */
-        Route.post = function (path, controllerOrCallback) {
-            this.register("POST", path, controllerOrCallback);
-        };
-        /**
-         * Handle GET/POST Requests
-         *
-         * @param path
-         * @param controllerOrCallback
-         * @returns void
-         */
-        Route.any = function (path, controllerOrCallback) {
-            this.get(path, controllerOrCallback);
-            this.post(path, controllerOrCallback);
-        };
-        /**
-         * Create new pattern
-         *
-         * @param name
-         * @param pattern
-         * @returns number
-         */
-        Route.pattern = function (name, pattern) {
-            return this.getInstance().$patterns.push({ name: name, pattern: pattern });
-        };
-        /**
-         * Instantiates or returns instance
-         *
-         * @returns Route
-         */
-        Route.getInstance = function () {
-            if (!this.$instance) {
-                this.$instance = new Route;
-            }
-            return this.$instance;
-        };
-        /**
-         * Returns a list of route Patterns
-         *
-         * @returns Array<{ name: string, pattern: string }>
-         */
-        Route.getPatterns = function () {
-            return this.getInstance().$patterns;
-        };
-        /**
-         * Register new HTTP Requests
-         *
-         * @param method
-         * @param path
-         * @param controllerOrCallback
-         * @returns void
-         */
-        Route.register = function (method, path, controllerOrCallback) {
-            if (controllerOrCallback instanceof controller_1.default) {
-                var controller = controllerOrCallback;
-                this.getInstance().$routes.push({ path: path, controller: controller, method: method });
-            }
-            else if (typeof controllerOrCallback !== "function") {
-                return utils_2.debug("19458", "controllerOrCallback", "function");
-            }
-            else {
-                var callback = controllerOrCallback;
-                this.getInstance().$routes.push({ path: path, callback: callback, method: method });
-            }
-        };
-        return Route;
-    }());
-    exports.default = Route;
-});
-define("paths/index", ["require", "exports", "utils/index"], function (require, exports, utils_3) {
+define("paths/index", ["require", "exports", "utils/index"], function (require, exports, utils_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     /** Path discovery and manager */
@@ -388,7 +315,7 @@ define("paths/index", ["require", "exports", "utils/index"], function (require, 
              */
             this.$patterns = {};
             if (typeof path !== "string") {
-                utils_3.debug("19400", "Invalid Path type, use string instead");
+                utils_2.debug("19400", "Invalid Path type, use string instead");
             }
             this.$vars = path.split("/");
             this.$varNames = this.$regexp.exec(path) || [];
@@ -513,10 +440,10 @@ define("paths/index", ["require", "exports", "utils/index"], function (require, 
     }());
     exports.default = Pathfinder;
 });
-define("resolve/index", ["require", "exports", "controller/index", "paths/index"], function (require, exports, controller_2, paths_1) {
+define("resolve/index", ["require", "exports", "controller/index", "paths/index"], function (require, exports, controller_1, paths_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    controller_2 = __importDefault(controller_2);
+    controller_1 = __importDefault(controller_1);
     paths_1 = __importDefault(paths_1);
     var Resolver = /** @class */ (function (_super) {
         __extends(Resolver, _super);
@@ -543,16 +470,242 @@ define("resolve/index", ["require", "exports", "controller/index", "paths/index"
             return _this;
         }
         return Resolver;
-    }(controller_2.default));
+    }(controller_1.default));
     exports.default = Resolver;
 });
-define("knuckjs", ["require", "exports", "router/index", "controller/index", "paths/index", "resolve/index", "utils/index"], function (require, exports, router_1, controller_3, paths_2, resolve_1, Util) {
+define("types", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+});
+define("controller/control", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Control = /** @class */ (function () {
+        function Control() {
+            this.$middlewares = [
+                {
+                    name: 'final',
+                    callback: function () {
+                        return true;
+                    }
+                }
+            ];
+        }
+        Control.prototype.redirect = function (path) {
+            return this.$instance['realpath'] = path;
+        };
+        Control.prototype.middleware = function (names) {
+            var _this = this;
+            if (names.constructor !== Array) {
+                names = [names];
+            }
+            return names.every(function (name, key) {
+                return _this.getMiddleware(name)(_this.getMiddleware(names[key + 1] || "final"));
+            });
+        };
+        Control.prototype.registerMiddleware = function (name, callback) {
+            this.$middlewares.push({ name: name, callback: callback });
+        };
+        Control.prototype.setInstance = function (instance) {
+            return this.$instance = instance;
+        };
+        Control.prototype.getInstance = function () {
+            return this.$instance || this;
+        };
+        Control.prototype.getMiddleware = function (name) {
+            var middleware;
+            this.$middlewares.forEach(function (ware) {
+                if (ware.name === name) {
+                    middleware = ware.callback;
+                }
+            });
+            return middleware;
+        };
+        return Control;
+    }());
+    exports.default = Control;
+});
+define("controller/index", ["require", "exports", "controller/control", "utils/index"], function (require, exports, control_1, utils_3) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    control_1 = __importDefault(control_1);
+    /** Route Controller is used to define multiple invokable methods for generating response */
+    var Controller = /** @class */ (function (_super) {
+        __extends(Controller, _super);
+        function Controller() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        /**
+         * Method to be called by default
+         *
+         * @returns string
+         */
+        Controller.prototype.invoke = function () {
+            return this.view("index");
+        };
+        /**
+         * Use to render nunjucks templates
+         *
+         * @param templateName
+         * @param context
+         * @returns string
+         */
+        Controller.prototype.view = function (templateName, context) {
+            var _a;
+            if (typeof window === "object" && typeof window["nunjucks"] === "object") {
+                templateName = utils_3.watchSuffix(templateName, ".njk");
+                return (_a = window["nunjucks"]) === null || _a === void 0 ? void 0 : _a.render(templateName, context);
+            }
+            return null;
+        };
+        return Controller;
+    }(control_1.default));
+    exports.default = Controller;
+});
+define("router/instance", ["require", "exports", "controller/index", "utils/index"], function (require, exports, controller_2, utils_4) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    controller_2 = __importDefault(controller_2);
+    var RouteInstance = /** @class */ (function () {
+        /**
+         * Constructor for singleton routes class
+         *
+         * @returns void
+         */
+        function RouteInstance() {
+            this.$routes = [];
+        }
+        /**
+         * Returns a list of routes
+         *
+         * @returns routeList
+         */
+        RouteInstance.prototype.all = function () {
+            return this.$routes;
+        };
+        /**
+         * Instantiates or returns instance
+         *
+         * @returns Route
+         */
+        RouteInstance.getInstance = function () {
+            if (!this.$instance) {
+                this.$instance = new this;
+            }
+            return this.$instance;
+        };
+        /**
+         * Register new HTTP Requests
+         *
+         * @param method
+         * @param path
+         * @param controllerOrCallback
+         * @returns void
+         */
+        RouteInstance.register = function (method, path, controllerOrCallback) {
+            if (controllerOrCallback instanceof controller_2.default) {
+                var controller = controllerOrCallback;
+                this.getInstance().$routes.push({ path: path, controller: controller, method: method });
+            }
+            else if (typeof controllerOrCallback !== "function") {
+                return utils_4.debug("19458", "controllerOrCallback", "function");
+            }
+            else {
+                var callback = controllerOrCallback;
+                this.getInstance().$routes.push({ path: path, callback: callback, method: method });
+            }
+        };
+        /**
+         * Returns null when not routed
+         *
+         * @var route
+         */
+        RouteInstance.currentRoute = null;
+        return RouteInstance;
+    }());
+    exports.default = RouteInstance;
+});
+define("router/index", ["require", "exports", "router/instance"], function (require, exports, instance_2) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    instance_2 = __importDefault(instance_2);
+    /** App Route implemntation class */
+    var Route = /** @class */ (function (_super) {
+        __extends(Route, _super);
+        /**
+         * Declaring a private constructor ensures we have a singleton
+         *
+         * @returns void
+         */
+        function Route() {
+            var _this = _super.call(this) || this;
+            /**
+             * Patterns for Application's routes
+             *
+             * @var routePatternList
+             */
+            _this.$patterns = [];
+            return _this;
+        }
+        /**
+         * Handle GET Requests
+         *
+         * @param path
+         * @param controllerOrCallback
+         * @returns void
+         */
+        Route.get = function (path, controllerOrCallback) {
+            this.register("GET", path, controllerOrCallback);
+        };
+        /**
+         * Handle POST Requests
+         *
+         * @param path
+         * @param controllerOrCallback
+         * @returns void
+         */
+        Route.post = function (path, controllerOrCallback) {
+            this.register("POST", path, controllerOrCallback);
+        };
+        /**
+         * Handle GET/POST Requests
+         *
+         * @param path
+         * @param controllerOrCallback
+         * @returns void
+         */
+        Route.any = function (path, controllerOrCallback) {
+            this.get(path, controllerOrCallback);
+            this.post(path, controllerOrCallback);
+        };
+        /**
+         * Create new pattern
+         *
+         * @param name
+         * @param pattern
+         * @returns number
+         */
+        Route.pattern = function (name, pattern) {
+            return this.getInstance().$patterns.push({ name: name, pattern: pattern });
+        };
+        /**
+         * Returns a list of route Patterns
+         *
+         * @returns routePatternList
+         */
+        Route.getPatterns = function () {
+            return this.getInstance().$patterns;
+        };
+        return Route;
+    }(instance_2.default));
+    exports.default = Route;
+});
+define("knuckjs", ["require", "exports", "router/index", "controller/index", "paths/index", "resolve/index", "utils/index"], function (require, exports, router_1, controller_3, paths_2, resolve_1, utils_5) {
     "use strict";
     router_1 = __importDefault(router_1);
     controller_3 = __importDefault(controller_3);
     paths_2 = __importDefault(paths_2);
     resolve_1 = __importDefault(resolve_1);
-    Util = __importStar(Util);
     return /** @class */ (function () {
         /**
          * Provide an easy way to register routes et al.
@@ -574,7 +727,7 @@ define("knuckjs", ["require", "exports", "router/index", "controller/index", "pa
              */
             this.prefix = "/";
             if (typeof callback === "function") {
-                callback.apply(this, [router_1.default, controller_3.default, Util]);
+                callback.apply(this, [router_1.default, controller_3.default]);
             }
         }
         /**
@@ -587,7 +740,7 @@ define("knuckjs", ["require", "exports", "router/index", "controller/index", "pa
             var routes = router_1.default.getInstance().all();
             var currentRoute;
             routes.forEach(function (route) {
-                var path = new paths_2.default(Util.watchPrefix(route.path, _this.prefix), _this.realpath);
+                var path = new paths_2.default(utils_5.watchPrefix(route.path, _this.prefix), _this.realpath);
                 path.setPatterns(router_1.default.getPatterns());
                 if (path.matches()) {
                     currentRoute = { route: route, path: path };
@@ -602,7 +755,13 @@ define("knuckjs", ["require", "exports", "router/index", "controller/index", "pa
          * @param callback
          * @returns void
          */
-        Knuck.prototype.render = function (currentRoute, callback) {
+        Knuck.prototype.render = function (callback, currentRoute, forceRender) {
+            var _a, _b;
+            if (currentRoute === void 0) { currentRoute = this.output(); }
+            if (forceRender === void 0) { forceRender = false; }
+            if (((_a = router_1.default.currentRoute) === null || _a === void 0 ? void 0 : _a.path) === (currentRoute === null || currentRoute === void 0 ? void 0 : currentRoute.route.path) && forceRender !== true) {
+                utils_5.debug("19460", "path", (_b = router_1.default.currentRoute) === null || _b === void 0 ? void 0 : _b.path);
+            }
             callback = callback || (function (resolve) {
                 if (typeof document === "object") {
                     document.write(resolve.content);
@@ -611,8 +770,11 @@ define("knuckjs", ["require", "exports", "router/index", "controller/index", "pa
                     console.log(resolve);
                 }
             });
+            if (typeof callback !== "function") {
+                utils_5.debug("19458", "callback", "function");
+            }
             if ((currentRoute === null || currentRoute === void 0 ? void 0 : currentRoute.path) instanceof paths_2.default) {
-                this.route = currentRoute.route;
+                router_1.default.currentRoute = currentRoute.route;
                 callback.apply(this, [new resolve_1.default(currentRoute)]);
             }
         };
@@ -624,14 +786,8 @@ define("knuckjs", ["require", "exports", "router/index", "controller/index", "pa
          */
         Knuck.prototype.run = function (callback) {
             var _this = this;
-            var currentRoute = this.output();
-            this.render(currentRoute, callback);
-            setInterval(function () {
-                var newRoute = _this.output();
-                if ((newRoute === null || newRoute === void 0 ? void 0 : newRoute.route.path) !== (currentRoute === null || currentRoute === void 0 ? void 0 : currentRoute.route.path)) {
-                    _this.render(currentRoute = newRoute, callback);
-                }
-            }, 5);
+            this.render(callback);
+            setInterval(function () { return _this.render(callback); }, 5);
         };
         return Knuck;
     }());
