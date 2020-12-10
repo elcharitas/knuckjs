@@ -33,7 +33,7 @@ export = class Knuck extends Control
     {
         super();
 
-        this.setInstance(this);
+        this.setInstance();
 
         if (typeof callback === "function")
         {
@@ -73,7 +73,7 @@ export = class Knuck extends Control
     {
         if ( Route.currentRoute?.path === currentRoute?.route.path && forceRender !== true)
         {
-            debug("19460", "path", Route.currentRoute?.path);
+            return null;
         }
 
         callback = callback || (resolve => {
@@ -106,6 +106,6 @@ export = class Knuck extends Control
     {
         this.render(callback);
 
-        setInterval(() => this.render(callback), 5);
+        setInterval(() => this.render(callback), 1005);
     }
 }

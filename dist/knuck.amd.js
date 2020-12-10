@@ -451,6 +451,7 @@ define("resolve/index", ["require", "exports", "controller/index", "paths/index"
          * Receive currentRoute and Handles it
          *
          * @param currentRoute
+         * @returns void
          */
         function Resolver(currentRoute, instance) {
             var _a;
@@ -506,7 +507,7 @@ define("controller/control", ["require", "exports", "utils/index"], function (re
                 names = [names];
             }
             return names.every(function (name, key) {
-                return _this.getMiddleware(name)(_this.getMiddleware(names[key + 1] || null) || (function () { return true; }));
+                return _this.getMiddleware(name).call(_this.getInstance(), _this.getMiddleware(names[key + 1]) || (function () { return true; }));
             });
         };
         /**
@@ -543,15 +544,20 @@ define("controller/control", ["require", "exports", "utils/index"], function (re
             return this.$instance || this;
         };
         /**
-         * Gets a middleware callback by its name
+         * Gets a middleware callback in the global/local instance by its name
          *
          * @param name
          * @returns middleware
          */
         Control.prototype.getMiddleware = function (name) {
-            var _a;
+            var _a, _b, _c;
             var middleware = null;
-            (_a = this.$middlewares) === null || _a === void 0 ? void 0 : _a.forEach(function (ware) {
+            (_b = (_a = this.$instance) === null || _a === void 0 ? void 0 : _a.$middlewares) === null || _b === void 0 ? void 0 : _b.forEach(function (ware) {
+                if (ware.name === name) {
+                    middleware = ware.callback;
+                }
+            });
+            (_c = this.$middlewares) === null || _c === void 0 ? void 0 : _c.forEach(function (ware) {
                 if (ware.name === name) {
                     middleware = ware.callback;
                 }
@@ -770,7 +776,7 @@ define("knuckjs", ["require", "exports", "router/index", "controller/index", "co
              * @var string
              */
             _this.prefix = "/";
-            _this.setInstance(_this);
+            _this.setInstance();
             if (typeof callback === "function") {
                 callback.apply(_this, [router_1.default, controller_3.default]);
             }
@@ -801,11 +807,11 @@ define("knuckjs", ["require", "exports", "router/index", "controller/index", "co
          * @returns void
          */
         Knuck.prototype.render = function (callback, currentRoute, forceRender) {
-            var _a, _b;
+            var _a;
             if (currentRoute === void 0) { currentRoute = this.output(); }
             if (forceRender === void 0) { forceRender = false; }
             if (((_a = router_1.default.currentRoute) === null || _a === void 0 ? void 0 : _a.path) === (currentRoute === null || currentRoute === void 0 ? void 0 : currentRoute.route.path) && forceRender !== true) {
-                utils_6.debug("19460", "path", (_b = router_1.default.currentRoute) === null || _b === void 0 ? void 0 : _b.path);
+                return null;
             }
             callback = callback || (function (resolve) {
                 if (typeof document === "object") {
@@ -832,7 +838,7 @@ define("knuckjs", ["require", "exports", "router/index", "controller/index", "co
         Knuck.prototype.run = function (callback) {
             var _this = this;
             this.render(callback);
-            setInterval(function () { return _this.render(callback); }, 5);
+            setInterval(function () { return _this.render(callback); }, 1005);
         };
         return Knuck;
     }(control_2.default));

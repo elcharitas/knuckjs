@@ -9,7 +9,7 @@ let app = new Knuck(function create(Route){
     // testing redirection...
     Route.get('/', () => {
         // redirect the app
-        this.realpath = "/page";
+        this.redirect("/home")
         //this text won't show on fast networks
         return "Redirecting...";
     });

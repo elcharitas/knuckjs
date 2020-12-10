@@ -45,7 +45,7 @@ export default class Control
         }
 
         return names.every((name: string, key: number) => 
-            this.getMiddleware(name)(this.getMiddleware(names[key + 1] || null) || (() => true))
+            this.getMiddleware(name).call(this.getInstance(), this.getMiddleware(names[key + 1]) || (() => true))
         );
     }
 
@@ -93,7 +93,7 @@ export default class Control
     }
 
     /**
-     * Gets a middleware callback by its name
+     * Gets a middleware callback in the global/local instance by its name
      * 
      * @param name
      * @returns middleware
@@ -101,6 +101,12 @@ export default class Control
     protected getMiddleware(name: string): middleware
     {
         let middleware: middleware = null;
+
+        this.$instance?.$middlewares?.forEach(ware => {
+            if (ware.name === name) {
+                middleware = ware.callback;
+            }
+        });
 
         this.$middlewares?.forEach(ware => {
             if (ware.name === name) {

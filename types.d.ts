@@ -289,6 +289,7 @@ declare module "resolve/index" {
          * Receive currentRoute and Handles it
          *
          * @param currentRoute
+         * @returns void
          */
         constructor(currentRoute: routePack, instance?: any);
     }
@@ -384,7 +385,7 @@ declare module "controller/control" {
          */
         getInstance(): this;
         /**
-         * Gets a middleware callback by its name
+         * Gets a middleware callback in the global/local instance by its name
          *
          * @param name
          * @returns middleware
