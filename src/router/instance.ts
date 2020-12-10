@@ -14,9 +14,9 @@ export default class RouteInstance
     /**
      * The Instance of Route
      * 
-     * @var Route
+     * @var RouteInstance
      */
-    protected static $instance: any;
+    protected static $instance: RouteInstance;
 
     /**
      * Returns null when not routed
@@ -50,7 +50,7 @@ export default class RouteInstance
      * 
      * @returns Route
      */
-    public static getInstance()
+    public static getInstance(): any
     {
         if (!this.$instance) {
             this.$instance = new this;

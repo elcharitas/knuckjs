@@ -3,7 +3,7 @@ import Pathfinder from "./paths";
 import Resolver from "./resolve";
 
 /** Type definition for route callback */
-type routeCallback = (resolve?: Resolver) => any;
+type routeCallback = (resolve: Resolver) => any;
 
 /** Type definition for route callback */
 type routeHandle = (...args: any[]) => any;
@@ -24,10 +24,25 @@ type routePack = { route: route, path: Pathfinder };
 type routeList = Array<route>;
 
 /** Type definition for route paterns */
-type routePattern = { name: string, pattern: string }
+type routePattern = { name: string, pattern: string };
 
 /** Type definition for list of patterns */
-type routePatternList = Array<routePattern>
+type routePatternList = Array<routePattern>;
+
+/** Type definition for nunjucks.render */
+type nunjucksRender = (name: string, context: object) => string;
+
+/** Type definition for custom window globals */
+type customGlobals = { nunjucks?: { render: nunjucksRender} };
+
+/** Modified window object */
+type globule = Window & typeof globalThis & customGlobals;
+
+/** Object interface for string indexes */
+interface obj extends Object
+{
+    [x: string]: any
+}
 
 export {
     route,
@@ -38,5 +53,7 @@ export {
     routePattern,
     routePatternList,
     middleware,
-    middlewareRecord
+    middlewareRecord,
+    globule,
+    obj
 }

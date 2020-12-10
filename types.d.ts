@@ -132,43 +132,8 @@ declare module "errors/index" {
     /** The complete error types */
     export { BaseError as Error, InstanceError, RouteError, };
 }
-declare module "utils/index" {
-    /**
-     * Tentatively capitalize first word in text
-     *
-     * @param text
-     * @param delimiter
-     * @returns string
-     */
-    let capslock: (text: string, delimiter?: string) => string;
-    /**
-     * Prepend prefix to text if not already Prepended
-     *
-     * @param text
-     * @param prefix
-     * @returns string
-     */
-    let watchPrefix: (text: string, prefix: string) => string;
-    /**
-     * Append suffix to text if not already appended
-     *
-     * @param text
-     * @param suffix
-     * @returns string
-     */
-    let watchSuffix: (text: string, suffix: string) => string;
-    /**
-     * Throw debug informations
-     *
-     * @param errorType
-     * @param args
-     * @returns void
-     */
-    let debug: (errorType: string, ...args: Array<string>) => void;
-    export { capslock, watchPrefix, watchSuffix, debug };
-}
 declare module "paths/index" {
-    import { routePatternList } from "types";
+    import { obj, routePatternList } from "types";
     /** Path discovery and manager */
     export default class Pathfinder {
         /**
@@ -198,9 +163,9 @@ declare module "paths/index" {
         /**
          * RegExp pattern list for matching variables
          *
-         * @var object
+         * @var obj
          */
-        protected $patterns: object;
+        protected $patterns: obj;
         /**
          * Discover variables and parse
          *
@@ -245,9 +210,9 @@ declare module "paths/index" {
         /**
          * Returns a collection of variables
          *
-         * @returns object
+         * @returns obj
          */
-        getVars(): object;
+        getVars(): obj;
         /**
          * Returns a list of variables
          *
@@ -299,7 +264,7 @@ declare module "types" {
     import Pathfinder from "paths/index";
     import Resolver from "resolve/index";
     /** Type definition for route callback */
-    type routeCallback = (resolve?: Resolver) => any;
+    type routeCallback = (resolve: Resolver) => any;
     /** Type definition for route callback */
     type routeHandle = (...args: any[]) => any;
     /** Type definition for middleware callback */
@@ -330,7 +295,56 @@ declare module "types" {
     };
     /** Type definition for list of patterns */
     type routePatternList = Array<routePattern>;
-    export { route, routeList, routePack, routeHandle, routeCallback, routePattern, routePatternList, middleware, middlewareRecord };
+    /** Type definition for nunjucks.render */
+    type nunjucksRender = (name: string, context: object) => string;
+    /** Type definition for custom window globals */
+    type customGlobals = {
+        nunjucks?: {
+            render: nunjucksRender;
+        };
+    };
+    /** Modified window object */
+    type globule = Window & typeof globalThis & customGlobals;
+    /** Object interface for string indexes */
+    interface obj extends Object {
+        [x: string]: any;
+    }
+    export { route, routeList, routePack, routeHandle, routeCallback, routePattern, routePatternList, middleware, middlewareRecord, globule, obj };
+}
+declare module "utils/index" {
+    /**
+     * Tentatively capitalize first word in text
+     *
+     * @param text
+     * @param delimiter
+     * @returns string
+     */
+    let capslock: (text: string, delimiter?: string) => string;
+    /**
+     * Prepend prefix to text if not already Prepended
+     *
+     * @param text
+     * @param prefix
+     * @returns string
+     */
+    let watchPrefix: (text: string, prefix: string) => string;
+    /**
+     * Append suffix to text if not already appended
+     *
+     * @param text
+     * @param suffix
+     * @returns string
+     */
+    let watchSuffix: (text: string, suffix: string) => string;
+    /**
+     * Throw debug informations
+     *
+     * @param errorType
+     * @param args
+     * @returns void
+     */
+    let debug: (errorType: string, ...args: Array<string>) => void;
+    export { capslock, watchPrefix, watchSuffix, debug };
 }
 declare module "controller/control" {
     import { middleware, middlewareRecord } from "types";
@@ -349,6 +363,12 @@ declare module "controller/control" {
          */
         protected $instance: this;
         /**
+         * The realpath for the Application
+         *
+         * @var string
+         */
+        realpath: string;
+        /**
          * Performs redirection
          *
          * @param path
@@ -364,13 +384,13 @@ declare module "controller/control" {
          */
         middleware(names: string | string[]): boolean;
         /**
-         * Regiters a middleware into current control
+         * Regiters a middleware into current control and returns new middleware count
          *
          * @param name
          * @param callback
-         * @returns void
+         * @returns number
          */
-        registerMiddleware(name: string, callback: middleware): void;
+        registerMiddleware(name: string, callback: middleware): number;
         /**
          * Sets the global instance
          *
@@ -400,9 +420,10 @@ declare module "controller/index" {
         /**
          * Method to be called by default
          *
+         * @param _args - Route variables passed to the method
          * @returns string
          */
-        invoke(...args: any[]): string;
+        invoke(..._args: any[]): string;
         /**
          * Use to render nunjucks templates
          *
@@ -425,9 +446,9 @@ declare module "router/instance" {
         /**
          * The Instance of Route
          *
-         * @var Route
+         * @var RouteInstance
          */
-        protected static $instance: any;
+        protected static $instance: RouteInstance;
         /**
          * Returns null when not routed
          *
@@ -468,6 +489,12 @@ declare module "router/index" {
     import { routePatternList } from "types";
     /** App Route implemntation class */
     export default class Route extends RouteInstance {
+        /**
+         * The Instance of Route
+         *
+         * @var Route
+         */
+        protected static $instance: Route;
         /**
          * Patterns for Application's routes
          *
@@ -518,6 +545,12 @@ declare module "router/index" {
          * @returns routePatternList
          */
         static getPatterns(): routePatternList;
+        /**
+         * Instantiates or returns instance
+         *
+         * @returns Route
+         */
+        static getInstance(): Route;
     }
 }
 declare module "knuckjs" {
@@ -563,7 +596,7 @@ declare module "knuckjs" {
             $instance: any;
             redirect(path: string): string;
             middleware(names: string | string[]): boolean;
-            registerMiddleware(name: string, callback: import("knuckjs/src/types").middleware): void;
+            registerMiddleware(name: string, callback: import("knuckjs/src/types").middleware): number;
             setInstance(instance?: any): any;
             getInstance(): any;
             getMiddleware(name: string): import("knuckjs/src/types").middleware;

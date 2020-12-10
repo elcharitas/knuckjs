@@ -219,78 +219,6 @@ define("errors/index", ["require", "exports", "errors/base", "errors/instance", 
     exports.InstanceError = instance_1.default;
     exports.RouteError = route_1.default;
 });
-define("utils/index", ["require", "exports", "errors/index"], function (require, exports, Debug) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.debug = exports.watchSuffix = exports.watchPrefix = exports.capslock = void 0;
-    Debug = __importStar(Debug);
-    /**
-     * Tentatively capitalize first word in text
-     *
-     * @param text
-     * @param delimiter
-     * @returns string
-     */
-    var capslock = function (text, delimiter) {
-        if (delimiter === void 0) { delimiter = " "; }
-        var words = text.split(delimiter);
-        words.forEach(function (word, index) {
-            var chars = word.split("");
-            chars[0] = chars[0].toUpperCase();
-            words[index] = chars.join("");
-        });
-        return words.join(delimiter);
-    };
-    exports.capslock = capslock;
-    /**
-     * Prepend prefix to text if not already Prepended
-     *
-     * @param text
-     * @param prefix
-     * @returns string
-     */
-    var watchPrefix = function (text, prefix) {
-        if (text.indexOf(prefix) !== 0) {
-            return prefix.concat(text);
-        }
-        return text;
-    };
-    exports.watchPrefix = watchPrefix;
-    /**
-     * Append suffix to text if not already appended
-     *
-     * @param text
-     * @param suffix
-     * @returns string
-     */
-    var watchSuffix = function (text, suffix) {
-        if (text.length !== text.indexOf(suffix) + suffix.length) {
-            return text.concat(suffix);
-        }
-        return text;
-    };
-    exports.watchSuffix = watchSuffix;
-    /**
-     * Throw debug informations
-     *
-     * @param errorType
-     * @param args
-     * @returns void
-     */
-    var debug = function (errorType) {
-        var _a;
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
-        for (var catcher in Debug) {
-            if (!(catcher in new Object) && Debug[catcher].typeCode == errorType) {
-                throw new ((_a = Debug[catcher]).bind.apply(_a, __spreadArrays([void 0], args)))();
-            }
-        }
-    };
-    exports.debug = debug;
-});
 define("paths/index", ["require", "exports", "utils/index"], function (require, exports, utils_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -311,11 +239,11 @@ define("paths/index", ["require", "exports", "utils/index"], function (require, 
             /**
              * RegExp pattern list for matching variables
              *
-             * @var object
+             * @var obj
              */
             this.$patterns = {};
             if (typeof path !== "string") {
-                utils_2.debug("19400", "Invalid Path type, use string instead");
+                utils_2.debug("19400", "Invalid Path type, use a string instead");
             }
             this.$vars = path.split("/");
             this.$varNames = this.$regexp.exec(path) || [];
@@ -396,7 +324,7 @@ define("paths/index", ["require", "exports", "utils/index"], function (require, 
         /**
          * Returns a collection of variables
          *
-         * @returns object
+         * @returns obj
          */
         Pathfinder.prototype.getVars = function () {
             var _this = this;
@@ -478,12 +406,91 @@ define("types", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
 });
+define("utils/index", ["require", "exports", "errors/index"], function (require, exports, Debugkit) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.debug = exports.watchSuffix = exports.watchPrefix = exports.capslock = void 0;
+    Debugkit = __importStar(Debugkit);
+    /**
+     * Tentatively capitalize first word in text
+     *
+     * @param text
+     * @param delimiter
+     * @returns string
+     */
+    var capslock = function (text, delimiter) {
+        if (delimiter === void 0) { delimiter = " "; }
+        var words = text.split(delimiter);
+        words.forEach(function (word, index) {
+            var chars = word.split("");
+            chars[0] = chars[0].toUpperCase();
+            words[index] = chars.join("");
+        });
+        return words.join(delimiter);
+    };
+    exports.capslock = capslock;
+    /**
+     * Prepend prefix to text if not already Prepended
+     *
+     * @param text
+     * @param prefix
+     * @returns string
+     */
+    var watchPrefix = function (text, prefix) {
+        if (text.indexOf(prefix) !== 0) {
+            return prefix.concat(text);
+        }
+        return text;
+    };
+    exports.watchPrefix = watchPrefix;
+    /**
+     * Append suffix to text if not already appended
+     *
+     * @param text
+     * @param suffix
+     * @returns string
+     */
+    var watchSuffix = function (text, suffix) {
+        if (text.length !== text.indexOf(suffix) + suffix.length) {
+            return text.concat(suffix);
+        }
+        return text;
+    };
+    exports.watchSuffix = watchSuffix;
+    /**
+     * Throw debug informations
+     *
+     * @param errorType
+     * @param args
+     * @returns void
+     */
+    var debug = function (errorType) {
+        var _a;
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        var Debug = Debugkit;
+        for (var catcher in Debug) {
+            if (Debug[catcher].typeCode == watchPrefix(errorType, "194") && !(catcher in new Object)) {
+                throw new ((_a = Debug[catcher]).bind.apply(_a, __spreadArrays([void 0], args)))();
+            }
+        }
+    };
+    exports.debug = debug;
+});
 define("controller/control", ["require", "exports", "utils/index"], function (require, exports, utils_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     /**  */
     var Control = /** @class */ (function () {
         function Control() {
+            /**
+             * The realpath for the Application
+             *
+             * @var string
+             */
+            this.realpath = "";
         }
         /**
          * Performs redirection
@@ -511,11 +518,11 @@ define("controller/control", ["require", "exports", "utils/index"], function (re
             });
         };
         /**
-         * Regiters a middleware into current control
+         * Regiters a middleware into current control and returns new middleware count
          *
          * @param name
          * @param callback
-         * @returns void
+         * @returns number
          */
         Control.prototype.registerMiddleware = function (name, callback) {
             if (typeof name !== "string") {
@@ -524,7 +531,7 @@ define("controller/control", ["require", "exports", "utils/index"], function (re
             if (!this.$middlewares) {
                 this.$middlewares = [];
             }
-            this.$middlewares.push({ name: name, callback: callback });
+            return this.$middlewares.push({ name: name, callback: callback });
         };
         /**
          * Sets the global instance
@@ -572,6 +579,8 @@ define("controller/index", ["require", "exports", "controller/control", "utils/i
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     control_1 = __importDefault(control_1);
+    /** modify only for types */
+    var globule = window;
     /** Route Controller is used to define multiple invokable methods for generating response */
     var Controller = /** @class */ (function (_super) {
         __extends(Controller, _super);
@@ -581,12 +590,13 @@ define("controller/index", ["require", "exports", "controller/control", "utils/i
         /**
          * Method to be called by default
          *
+         * @param _args - Route variables passed to the method
          * @returns string
          */
         Controller.prototype.invoke = function () {
-            var args = [];
+            var _args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i] = arguments[_i];
+                _args[_i] = arguments[_i];
             }
             return this.view("index");
         };
@@ -599,9 +609,9 @@ define("controller/index", ["require", "exports", "controller/control", "utils/i
          */
         Controller.prototype.view = function (templateName, context) {
             var _a;
-            if (typeof window === "object" && typeof window["nunjucks"] === "object") {
+            if (typeof globule === "object" && typeof (globule === null || globule === void 0 ? void 0 : globule.nunjucks) === "object") {
                 templateName = utils_4.watchSuffix(templateName, ".njk");
-                return (_a = window["nunjucks"]) === null || _a === void 0 ? void 0 : _a.render(templateName, context);
+                return (_a = globule === null || globule === void 0 ? void 0 : globule.nunjucks) === null || _a === void 0 ? void 0 : _a.render(templateName, context);
             }
             return null;
         };
@@ -743,6 +753,14 @@ define("router/index", ["require", "exports", "router/instance"], function (requ
         Route.getPatterns = function () {
             return this.getInstance().$patterns;
         };
+        /**
+         * Instantiates or returns instance
+         *
+         * @returns Route
+         */
+        Route.getInstance = function () {
+            return _super.getInstance.call(this);
+        };
         return Route;
     }(instance_2.default));
     exports.default = Route;
@@ -778,7 +796,7 @@ define("knuckjs", ["require", "exports", "router/index", "controller/index", "co
             _this.prefix = "/";
             _this.setInstance();
             if (typeof callback === "function") {
-                callback.apply(_this, [router_1.default, controller_3.default]);
+                callback.call(_this, router_1.default, controller_3.default);
             }
             return _this;
         }

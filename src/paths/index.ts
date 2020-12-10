@@ -1,5 +1,5 @@
 import { debug } from "../utils";
-import { routePatternList } from "../types";
+import { obj, routePattern, routePatternList } from "../types";
 
 /** Path discovery and manager */
 export default class Pathfinder
@@ -35,9 +35,9 @@ export default class Pathfinder
     /**
      * RegExp pattern list for matching variables
      * 
-     * @var object
+     * @var obj
      */
-    protected $patterns: object = {};
+    protected $patterns: obj = {};
 
     /**
      * Discover variables and parse
@@ -48,7 +48,7 @@ export default class Pathfinder
     {
         if (typeof path !== "string")
         {
-            debug("19400", "Invalid Path type, use string instead");
+            debug("19400", "Invalid Path type, use a string instead");
         }
         
         this.$vars = path.split("/");
@@ -119,7 +119,7 @@ export default class Pathfinder
      */
     public setPatterns(list: routePatternList): void
     {
-        list.forEach(type => {
+        list.forEach((type: routePattern) => {
             this.setPattern(type.name, type.pattern)
         });
     }
@@ -134,8 +134,8 @@ export default class Pathfinder
     {
         let index: number = -1;
 
-        this.$vars.forEach(($var, key) => {
-            let $varExp = this.$regexp.exec($var) || [];
+        this.$vars.forEach(($var: string, key: number) => {
+            let $varExp: string[] = this.$regexp.exec($var) || [];
             if (index === -1 && $varExp.indexOf(name) === 0)
             {
                 index = key;
@@ -148,13 +148,13 @@ export default class Pathfinder
     /**
      * Returns a collection of variables
      * 
-     * @returns object
+     * @returns obj
      */
-    public getVars(): object
+    public getVars(): obj
     {
-        let $vars: object = {};
+        let $vars: obj = {};
 
-        this.$varNames.forEach(name => {
+        this.$varNames.forEach((name: string) => {
             $vars[name] = this.getVar(name);
         });
 
@@ -170,7 +170,7 @@ export default class Pathfinder
     {
         let $vars: string[] = [];
 
-        this.$varNames.forEach(name => {
+        this.$varNames.forEach((name: string) => {
             $vars.push(this.getVar(name));
         });
 

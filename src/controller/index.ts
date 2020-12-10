@@ -1,5 +1,9 @@
 import Control from "./control"
 import { watchSuffix } from "../utils";
+import { globule } from "../types";
+
+/** modify only for types */
+let globule: globule = window;
 
 /** Route Controller is used to define multiple invokable methods for generating response */
 export default class Controller extends Control
@@ -7,9 +11,10 @@ export default class Controller extends Control
     /**
      * Method to be called by default
      * 
+     * @param _args - Route variables passed to the method
      * @returns string
      */
-    public invoke(...args): string
+    public invoke(..._args: any[]): string
     {
         return this.view("index");
     }
@@ -23,10 +28,10 @@ export default class Controller extends Control
      */
     public view(templateName: string, context?: object): string
     {
-        if (typeof window === "object" && typeof window["nunjucks"] === "object")
+        if (typeof globule === "object" && typeof globule?.nunjucks === "object")
         {
             templateName = watchSuffix(templateName, ".njk");
-            return window["nunjucks"]?.render(templateName, context);
+            return globule?.nunjucks?.render(templateName, context);
         }
 
         return null;

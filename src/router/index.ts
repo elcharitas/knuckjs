@@ -6,6 +6,12 @@ export default
 
 class Route extends RouteInstance
 {
+    /**
+     * The Instance of Route
+     * 
+     * @var Route
+     */
+    protected static $instance: Route;
 
     /**
      * Patterns for Application's routes
@@ -81,5 +87,15 @@ class Route extends RouteInstance
     public static getPatterns(): routePatternList
     {
         return this.getInstance().$patterns;
+    }
+
+    /**
+     * Instantiates or returns instance
+     * 
+     * @returns Route
+     */
+    public static getInstance(): Route
+    {
+        return super.getInstance();
     }
 }

@@ -19,6 +19,13 @@ export default class Control
     protected $instance: this;
 
     /**
+     * The realpath for the Application
+     * 
+     * @var string
+     */
+    public realpath: string = "";
+
+    /**
      * Performs redirection
      * 
      * @param path
@@ -50,13 +57,13 @@ export default class Control
     }
 
     /**
-     * Regiters a middleware into current control
+     * Regiters a middleware into current control and returns new middleware count
      * 
      * @param name 
      * @param callback
-     * @returns void
+     * @returns number
      */
-    public registerMiddleware(name: string, callback: middleware): void
+    public registerMiddleware(name: string, callback: middleware): number
     {
         if (typeof name !== "string")
         {
@@ -68,7 +75,7 @@ export default class Control
             this.$middlewares = []
         }
         
-        this.$middlewares.push({ name, callback });
+        return this.$middlewares.push({ name, callback });
     }
 
     /**

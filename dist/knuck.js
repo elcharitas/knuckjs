@@ -5,6 +5,12 @@ var utils_1 = require("../utils");
 /**  */
 var Control = /** @class */ (function () {
     function Control() {
+        /**
+         * The realpath for the Application
+         *
+         * @var string
+         */
+        this.realpath = "";
     }
     /**
      * Performs redirection
@@ -32,11 +38,11 @@ var Control = /** @class */ (function () {
         });
     };
     /**
-     * Regiters a middleware into current control
+     * Regiters a middleware into current control and returns new middleware count
      *
      * @param name
      * @param callback
-     * @returns void
+     * @returns number
      */
     Control.prototype.registerMiddleware = function (name, callback) {
         if (typeof name !== "string") {
@@ -45,7 +51,7 @@ var Control = /** @class */ (function () {
         if (!this.$middlewares) {
             this.$middlewares = [];
         }
-        this.$middlewares.push({ name: name, callback: callback });
+        return this.$middlewares.push({ name: name, callback: callback });
     };
     /**
      * Sets the global instance
@@ -110,6 +116,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var control_1 = __importDefault(require("./control"));
 var utils_1 = require("../utils");
+/** modify only for types */
+var globule = window;
 /** Route Controller is used to define multiple invokable methods for generating response */
 var Controller = /** @class */ (function (_super) {
     __extends(Controller, _super);
@@ -119,12 +127,13 @@ var Controller = /** @class */ (function (_super) {
     /**
      * Method to be called by default
      *
+     * @param _args - Route variables passed to the method
      * @returns string
      */
     Controller.prototype.invoke = function () {
-        var args = [];
+        var _args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
+            _args[_i] = arguments[_i];
         }
         return this.view("index");
     };
@@ -137,9 +146,9 @@ var Controller = /** @class */ (function (_super) {
      */
     Controller.prototype.view = function (templateName, context) {
         var _a;
-        if (typeof window === "object" && typeof window["nunjucks"] === "object") {
+        if (typeof globule === "object" && typeof (globule === null || globule === void 0 ? void 0 : globule.nunjucks) === "object") {
             templateName = utils_1.watchSuffix(templateName, ".njk");
-            return (_a = window["nunjucks"]) === null || _a === void 0 ? void 0 : _a.render(templateName, context);
+            return (_a = globule === null || globule === void 0 ? void 0 : globule.nunjucks) === null || _a === void 0 ? void 0 : _a.render(templateName, context);
         }
         return null;
     };
@@ -423,7 +432,7 @@ module.exports = /** @class */ (function (_super) {
         _this.prefix = "/";
         _this.setInstance();
         if (typeof callback === "function") {
-            callback.apply(_this, [router_1.default, controller_1.default]);
+            callback.call(_this, router_1.default, controller_1.default);
         }
         return _this;
     }
@@ -509,11 +518,11 @@ var Pathfinder = /** @class */ (function () {
         /**
          * RegExp pattern list for matching variables
          *
-         * @var object
+         * @var obj
          */
         this.$patterns = {};
         if (typeof path !== "string") {
-            utils_1.debug("19400", "Invalid Path type, use string instead");
+            utils_1.debug("19400", "Invalid Path type, use a string instead");
         }
         this.$vars = path.split("/");
         this.$varNames = this.$regexp.exec(path) || [];
@@ -594,7 +603,7 @@ var Pathfinder = /** @class */ (function () {
     /**
      * Returns a collection of variables
      *
-     * @returns object
+     * @returns obj
      */
     Pathfinder.prototype.getVars = function () {
         var _this = this;
@@ -775,6 +784,14 @@ var Route = /** @class */ (function (_super) {
     Route.getPatterns = function () {
         return this.getInstance().$patterns;
     };
+    /**
+     * Instantiates or returns instance
+     *
+     * @returns Route
+     */
+    Route.getInstance = function () {
+        return _super.getInstance.call(this);
+    };
     return Route;
 }(instance_1.default));
 exports.default = Route;
@@ -876,7 +893,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.debug = exports.watchSuffix = exports.watchPrefix = exports.capslock = void 0;
-var Debug = __importStar(require("../errors"));
+var Debugkit = __importStar(require("../errors"));
 /**
  * Tentatively capitalize first word in text
  *
@@ -936,8 +953,9 @@ var debug = function (errorType) {
     for (var _i = 1; _i < arguments.length; _i++) {
         args[_i - 1] = arguments[_i];
     }
+    var Debug = Debugkit;
     for (var catcher in Debug) {
-        if (!(catcher in new Object) && Debug[catcher].typeCode == errorType) {
+        if (Debug[catcher].typeCode == watchPrefix(errorType, "194") && !(catcher in new Object)) {
             throw new ((_a = Debug[catcher]).bind.apply(_a, __spreadArrays([void 0], args)))();
         }
     }

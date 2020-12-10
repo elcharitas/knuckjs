@@ -1,4 +1,5 @@
-import * as Debug from "../errors";
+import * as Debugkit from "../errors";
+import { obj } from "../types";
 
 /**
  * Tentatively capitalize first word in text
@@ -54,9 +55,10 @@ let watchSuffix = (text: string, suffix: string): string => {
  * @returns void
  */
 let debug = (errorType: string, ...args: Array<string>): void => {
+    let Debug: obj = Debugkit;
     for (let catcher in Debug)
     {
-        if (! (catcher in new Object) && Debug[catcher].typeCode == errorType)
+        if (Debug[catcher].typeCode == watchPrefix(errorType, "194") && !(catcher in new Object))
         {
             throw new Debug[catcher](...args);
         }

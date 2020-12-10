@@ -37,7 +37,7 @@ export = class Knuck extends Control
 
         if (typeof callback === "function")
         {
-            callback.apply(this, [Route, Controller])
+            callback.call(this, Route, Controller)
         }
     }
     
@@ -76,7 +76,7 @@ export = class Knuck extends Control
             return null;
         }
 
-        callback = callback || (resolve => {
+        callback = callback || ((resolve: Resolver) => {
             if (typeof document === "object") {
                 document.write(resolve.content);
             } else {
