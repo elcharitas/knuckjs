@@ -11,6 +11,12 @@ var Control = /** @class */ (function () {
          * @var string
          */
         this.realpath = "";
+        /**
+         * Watch out for realpath prefix
+         *
+         * @var string
+         */
+        this.prefix = "/";
     }
     /**
      * Performs redirection
@@ -19,7 +25,12 @@ var Control = /** @class */ (function () {
      * @returns string
      */
     Control.prototype.redirect = function (path) {
-        return this.$instance["realpath"] = path;
+        var _a;
+        var fullpath = utils_1.watchPrefix(path, (_a = this.$instance) === null || _a === void 0 ? void 0 : _a.prefix);
+        if (this.$instance.realpath === fullpath) {
+            utils_1.debug("460", "realpath", this.$instance);
+        }
+        return this.$instance.realpath = fullpath;
     };
     /**
      * Evaluates one or more middlewares.
@@ -46,7 +57,7 @@ var Control = /** @class */ (function () {
      */
     Control.prototype.registerMiddleware = function (name, callback) {
         if (typeof name !== "string") {
-            utils_1.debug("19400", "name: \"" + name + "\" must be a string");
+            utils_1.debug("400", "name: \"" + name + "\" must be a string");
         }
         if (!this.$middlewares) {
             this.$middlewares = [];
@@ -371,7 +382,7 @@ var RouteError = /** @class */ (function (_super) {
          * @var string
          */
         _this.helplink = "https://knuck.js.org/guide/errors/routes";
-        _super.prototype.setMessage.call(_this, "Route " + name + ": \"" + value + "\" must be " + type);
+        _super.prototype.setMessage.call(_this, "Route " + name + ": \"" + value[name] + "\" must be " + type);
         return _this;
     }
     /**
@@ -476,7 +487,7 @@ module.exports = /** @class */ (function (_super) {
             }
         });
         if (typeof callback !== "function") {
-            utils_1.debug("19458", "callback", "function");
+            utils_1.debug("458", "callback", "function");
         }
         if ((currentRoute === null || currentRoute === void 0 ? void 0 : currentRoute.path) instanceof paths_1.default) {
             router_1.default.currentRoute = currentRoute.route;
@@ -522,7 +533,7 @@ var Pathfinder = /** @class */ (function () {
          */
         this.$patterns = {};
         if (typeof path !== "string") {
-            utils_1.debug("19400", "Invalid Path type, use a string instead");
+            utils_1.debug("400", "Invalid Path type, use a string instead");
         }
         this.$vars = path.split("/");
         this.$varNames = this.$regexp.exec(path) || [];
@@ -846,7 +857,7 @@ var RouteInstance = /** @class */ (function () {
             this.getInstance().$routes.push({ path: path, controller: controller, method: method });
         }
         else if (typeof controllerOrCallback !== "function") {
-            return utils_1.debug("19458", "controllerOrCallback", "function");
+            return utils_1.debug("458", "controllerOrCallback", "function");
         }
         else {
             var callback = controllerOrCallback;
@@ -955,7 +966,7 @@ var debug = function (errorType) {
     }
     var Debug = Debugkit;
     for (var catcher in Debug) {
-        if (Debug[catcher].typeCode == watchPrefix(errorType, "194") && !(catcher in new Object)) {
+        if (Debug[catcher].typeCode == watchPrefix(errorType, "19") && !(catcher in new Object)) {
             throw new ((_a = Debug[catcher]).bind.apply(_a, __spreadArrays([void 0], args)))();
         }
     }

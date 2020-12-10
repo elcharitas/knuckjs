@@ -195,7 +195,7 @@ define("errors/route", ["require", "exports", "errors/base"], function (require,
              * @var string
              */
             _this.helplink = "https://knuck.js.org/guide/errors/routes";
-            _super.prototype.setMessage.call(_this, "Route " + name + ": \"" + value + "\" must be " + type);
+            _super.prototype.setMessage.call(_this, "Route " + name + ": \"" + value[name] + "\" must be " + type);
             return _this;
         }
         /**
@@ -243,7 +243,7 @@ define("paths/index", ["require", "exports", "utils/index"], function (require, 
              */
             this.$patterns = {};
             if (typeof path !== "string") {
-                utils_2.debug("19400", "Invalid Path type, use a string instead");
+                utils_2.debug("400", "Invalid Path type, use a string instead");
             }
             this.$vars = path.split("/");
             this.$varNames = this.$regexp.exec(path) || [];
@@ -472,7 +472,7 @@ define("utils/index", ["require", "exports", "errors/index"], function (require,
         }
         var Debug = Debugkit;
         for (var catcher in Debug) {
-            if (Debug[catcher].typeCode == watchPrefix(errorType, "194") && !(catcher in new Object)) {
+            if (Debug[catcher].typeCode == watchPrefix(errorType, "19") && !(catcher in new Object)) {
                 throw new ((_a = Debug[catcher]).bind.apply(_a, __spreadArrays([void 0], args)))();
             }
         }
@@ -491,6 +491,12 @@ define("controller/control", ["require", "exports", "utils/index"], function (re
              * @var string
              */
             this.realpath = "";
+            /**
+             * Watch out for realpath prefix
+             *
+             * @var string
+             */
+            this.prefix = "/";
         }
         /**
          * Performs redirection
@@ -499,7 +505,12 @@ define("controller/control", ["require", "exports", "utils/index"], function (re
          * @returns string
          */
         Control.prototype.redirect = function (path) {
-            return this.$instance["realpath"] = path;
+            var _a;
+            var fullpath = utils_3.watchPrefix(path, (_a = this.$instance) === null || _a === void 0 ? void 0 : _a.prefix);
+            if (this.$instance.realpath === fullpath) {
+                utils_3.debug("460", "realpath", this.$instance);
+            }
+            return this.$instance.realpath = fullpath;
         };
         /**
          * Evaluates one or more middlewares.
@@ -526,7 +537,7 @@ define("controller/control", ["require", "exports", "utils/index"], function (re
          */
         Control.prototype.registerMiddleware = function (name, callback) {
             if (typeof name !== "string") {
-                utils_3.debug("19400", "name: \"" + name + "\" must be a string");
+                utils_3.debug("400", "name: \"" + name + "\" must be a string");
             }
             if (!this.$middlewares) {
                 this.$middlewares = [];
@@ -665,7 +676,7 @@ define("router/instance", ["require", "exports", "controller/index", "utils/inde
                 this.getInstance().$routes.push({ path: path, controller: controller, method: method });
             }
             else if (typeof controllerOrCallback !== "function") {
-                return utils_5.debug("19458", "controllerOrCallback", "function");
+                return utils_5.debug("458", "controllerOrCallback", "function");
             }
             else {
                 var callback = controllerOrCallback;
@@ -840,7 +851,7 @@ define("knuckjs", ["require", "exports", "router/index", "controller/index", "co
                 }
             });
             if (typeof callback !== "function") {
-                utils_6.debug("19458", "callback", "function");
+                utils_6.debug("458", "callback", "function");
             }
             if ((currentRoute === null || currentRoute === void 0 ? void 0 : currentRoute.path) instanceof paths_2.default) {
                 router_1.default.currentRoute = currentRoute.route;

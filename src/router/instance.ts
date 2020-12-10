@@ -75,7 +75,7 @@ export default class RouteInstance
         }
         else if (typeof controllerOrCallback !== "function")
         {
-            return debug("19458", "controllerOrCallback", "function");
+            return debug("458", "controllerOrCallback", "function");
         }
         else {
             let callback = controllerOrCallback;

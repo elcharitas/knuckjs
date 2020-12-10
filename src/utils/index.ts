@@ -54,11 +54,11 @@ let watchSuffix = (text: string, suffix: string): string => {
  * @param args
  * @returns void
  */
-let debug = (errorType: string, ...args: Array<string>): void => {
+let debug = (errorType: string, ...args: Array<any>): void => {
     let Debug: obj = Debugkit;
     for (let catcher in Debug)
     {
-        if (Debug[catcher].typeCode == watchPrefix(errorType, "194") && !(catcher in new Object))
+        if (Debug[catcher].typeCode == watchPrefix(errorType, "19") && !(catcher in new Object))
         {
             throw new Debug[catcher](...args);
         }

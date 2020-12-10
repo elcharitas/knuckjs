@@ -48,7 +48,7 @@ export default class Pathfinder
     {
         if (typeof path !== "string")
         {
-            debug("19400", "Invalid Path type, use a string instead");
+            debug("400", "Invalid Path type, use a string instead");
         }
         
         this.$vars = path.split("/");

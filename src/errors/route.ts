@@ -41,6 +41,6 @@ export default
      */
     constructor(name: string, value: any, type: string = "unique") {
         super();
-        super.setMessage(`Route ${name}: "${value}" must be ${type}`)
+        super.setMessage(`Route ${name}: "${value[name]}" must be ${type}`)
     }
 }

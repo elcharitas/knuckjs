@@ -86,7 +86,7 @@ export = class Knuck extends Control
 
         if (typeof callback !== "function")
         {
-            debug("19458", "callback", "function");
+            debug("458", "callback", "function");
         }
 
         if (currentRoute?.path instanceof Pathfinder)

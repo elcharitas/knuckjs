@@ -343,7 +343,7 @@ declare module "utils/index" {
      * @param args
      * @returns void
      */
-    let debug: (errorType: string, ...args: Array<string>) => void;
+    let debug: (errorType: string, ...args: Array<any>) => void;
     export { capslock, watchPrefix, watchSuffix, debug };
 }
 declare module "controller/control" {
@@ -368,6 +368,12 @@ declare module "controller/control" {
          * @var string
          */
         realpath: string;
+        /**
+         * Watch out for realpath prefix
+         *
+         * @var string
+         */
+        prefix: string;
         /**
          * Performs redirection
          *

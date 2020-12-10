@@ -1,4 +1,4 @@
-import { debug } from "../utils";
+import { debug, watchPrefix } from "../utils";
 import { middleware, middlewareRecord } from "../types";
 
 /**  */
@@ -26,6 +26,13 @@ export default class Control
     public realpath: string = "";
 
     /**
+     * Watch out for realpath prefix
+     * 
+     * @var string
+     */
+    public prefix: string = "/";
+
+    /**
      * Performs redirection
      * 
      * @param path
@@ -33,7 +40,14 @@ export default class Control
      */
     public redirect(path: string): string
     {
-        return this.$instance["realpath"] = path;
+        let fullpath: string = watchPrefix(path, this.$instance?.prefix);
+
+        if (this.$instance.realpath === fullpath)
+        {
+            debug("460", "realpath", this.$instance);
+        }
+
+        return this.$instance.realpath = fullpath;
     }
 
     
@@ -67,7 +81,7 @@ export default class Control
     {
         if (typeof name !== "string")
         {
-            debug("19400", `name: "${name}" must be a string`);
+            debug("400", `name: "${name}" must be a string`);
         }
 
         if (!this.$middlewares)
