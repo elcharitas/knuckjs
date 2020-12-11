@@ -46,7 +46,7 @@ var Control = /** @class */ (function () {
         configurable: true
     });
     /**
-     * Performs redirection
+     * Performs redirection and returns the path
      *
      * @param path
      * @returns string
@@ -133,7 +133,7 @@ var Control = /** @class */ (function () {
 }());
 exports.default = Control;
 
-},{"../utils":12}],2:[function(require,module,exports){
+},{"../utils":13}],2:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -194,7 +194,59 @@ var Controller = /** @class */ (function (_super) {
 }(control_1.default));
 exports.default = Controller;
 
-},{"../utils":12,"./control":1}],3:[function(require,module,exports){
+},{"../utils":13,"./control":1}],3:[function(require,module,exports){
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var index_1 = __importDefault(require("./index"));
+/** Handy controller to handle redirections */
+var RedirectController = /** @class */ (function (_super) {
+    __extends(RedirectController, _super);
+    /**
+     * Takes the path to redirect as argument and saves it
+     *
+     * @param pathTo
+     * @returns void
+     */
+    function RedirectController(pathTo) {
+        var _this = _super.call(this) || this;
+        /**
+         * Path to redirect to
+         *
+         * @var string
+         */
+        _this.redirectTo = "#";
+        _this.redirectTo = pathTo;
+        return _this;
+    }
+    /**
+     * Perform the redirection and return path redirecting to
+     *
+     * @returns string
+     */
+    RedirectController.prototype.invoke = function () {
+        return this.redirect(this.redirectTo);
+    };
+    return RedirectController;
+}(index_1.default));
+exports.default = RedirectController;
+
+},{"./index":2}],4:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -280,7 +332,7 @@ var BaseError = /** @class */ (function (_super) {
 }(Error));
 exports.default = BaseError;
 
-},{"../utils":12}],4:[function(require,module,exports){
+},{"../utils":13}],5:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -294,7 +346,7 @@ exports.InstanceError = instance_1.default;
 var route_1 = __importDefault(require("./route"));
 exports.RouteError = route_1.default;
 
-},{"./base":3,"./instance":5,"./route":6}],5:[function(require,module,exports){
+},{"./base":4,"./instance":6,"./route":7}],6:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -358,7 +410,7 @@ var InstanceError = /** @class */ (function (_super) {
 }(base_1.default));
 exports.default = InstanceError;
 
-},{"./base":3}],6:[function(require,module,exports){
+},{"./base":4}],7:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -422,7 +474,7 @@ var RouteError = /** @class */ (function (_super) {
 }(base_1.default));
 exports.default = RouteError;
 
-},{"./base":3}],7:[function(require,module,exports){
+},{"./base":4}],8:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -540,7 +592,7 @@ module.exports = /** @class */ (function (_super) {
     return Knuck;
 }(control_1.default));
 
-},{"./controller":2,"./controller/control":1,"./paths":8,"./resolve":9,"./router":10,"./utils":12}],8:[function(require,module,exports){
+},{"./controller":2,"./controller/control":1,"./paths":9,"./resolve":10,"./router":11,"./utils":13}],9:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = require("../utils");
@@ -690,7 +742,7 @@ var Pathfinder = /** @class */ (function () {
 }());
 exports.default = Pathfinder;
 
-},{"../utils":12}],9:[function(require,module,exports){
+},{"../utils":13}],10:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -741,7 +793,7 @@ var Resolver = /** @class */ (function (_super) {
 }(controller_1.default));
 exports.default = Resolver;
 
-},{"../controller":2,"../paths":8}],10:[function(require,module,exports){
+},{"../controller":2,"../paths":9}],11:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -761,6 +813,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var instance_1 = __importDefault(require("./instance"));
+var redirect_1 = __importDefault(require("../controller/redirect"));
 /** App Route implemntation class */
 var Route = /** @class */ (function (_super) {
     __extends(Route, _super);
@@ -778,6 +831,7 @@ var Route = /** @class */ (function (_super) {
          */
         _this.$patterns = [];
         return _this;
+        // do nothing...
     }
     /**
      * Handle GET Requests
@@ -798,6 +852,16 @@ var Route = /** @class */ (function (_super) {
      */
     Route.post = function (path, controllerOrCallback) {
         this.register("POST", path, controllerOrCallback);
+    };
+    /**
+     * Handle GET/POST Requests
+     *
+     * @param path
+     * @param controllerOrCallback
+     * @returns void
+     */
+    Route.redirect = function (from, pathTo) {
+        this.get(from, new redirect_1.default(pathTo));
     };
     /**
      * Handle GET/POST Requests
@@ -840,7 +904,7 @@ var Route = /** @class */ (function (_super) {
 }(instance_1.default));
 exports.default = Route;
 
-},{"./instance":11}],11:[function(require,module,exports){
+},{"../controller/redirect":3,"./instance":12}],12:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -907,7 +971,7 @@ var RouteInstance = /** @class */ (function () {
 }());
 exports.default = RouteInstance;
 
-},{"../controller":2,"../utils":12}],12:[function(require,module,exports){
+},{"../controller":2,"../utils":13}],13:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -1006,5 +1070,5 @@ var debug = function (errorType) {
 };
 exports.debug = debug;
 
-},{"../errors":4}]},{},[7])(7)
+},{"../errors":5}]},{},[8])(8)
 });

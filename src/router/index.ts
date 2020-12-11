@@ -1,4 +1,5 @@
 import RouteInstance from "./instance";
+import RedirectController from "../controller/redirect";
 import { routePatternList } from "../types";
 
 /** App Route implemntation class */
@@ -28,6 +29,8 @@ class Route extends RouteInstance
     private constructor()
     {
         super();
+
+        // do nothing...
     }
     
     /**
@@ -52,6 +55,18 @@ class Route extends RouteInstance
     public static post(path: string, controllerOrCallback: any): void
     {
         this.register("POST", path, controllerOrCallback);
+    }
+    
+    /**
+     * Handle GET/POST Requests
+     * 
+     * @param path 
+     * @param controllerOrCallback
+     * @returns void
+     */
+    public static redirect(from: string, pathTo: string): void
+    {
+        this.get(from, new RedirectController(pathTo));
     }
 
     /**

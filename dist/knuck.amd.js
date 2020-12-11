@@ -527,7 +527,7 @@ define("controller/control", ["require", "exports", "utils/index"], function (re
             configurable: true
         });
         /**
-         * Performs redirection
+         * Performs redirection and returns the path
          *
          * @param path
          * @returns string
@@ -721,10 +721,47 @@ define("router/instance", ["require", "exports", "controller/index", "utils/inde
     }());
     exports.default = RouteInstance;
 });
-define("router/index", ["require", "exports", "router/instance"], function (require, exports, instance_2) {
+define("controller/redirect", ["require", "exports", "controller/index"], function (require, exports, index_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    index_1 = __importDefault(index_1);
+    /** Handy controller to handle redirections */
+    var RedirectController = /** @class */ (function (_super) {
+        __extends(RedirectController, _super);
+        /**
+         * Takes the path to redirect as argument and saves it
+         *
+         * @param pathTo
+         * @returns void
+         */
+        function RedirectController(pathTo) {
+            var _this = _super.call(this) || this;
+            /**
+             * Path to redirect to
+             *
+             * @var string
+             */
+            _this.redirectTo = "#";
+            _this.redirectTo = pathTo;
+            return _this;
+        }
+        /**
+         * Perform the redirection and return path redirecting to
+         *
+         * @returns string
+         */
+        RedirectController.prototype.invoke = function () {
+            return this.redirect(this.redirectTo);
+        };
+        return RedirectController;
+    }(index_1.default));
+    exports.default = RedirectController;
+});
+define("router/index", ["require", "exports", "router/instance", "controller/redirect"], function (require, exports, instance_2, redirect_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     instance_2 = __importDefault(instance_2);
+    redirect_1 = __importDefault(redirect_1);
     /** App Route implemntation class */
     var Route = /** @class */ (function (_super) {
         __extends(Route, _super);
@@ -742,6 +779,7 @@ define("router/index", ["require", "exports", "router/instance"], function (requ
              */
             _this.$patterns = [];
             return _this;
+            // do nothing...
         }
         /**
          * Handle GET Requests
@@ -762,6 +800,16 @@ define("router/index", ["require", "exports", "router/instance"], function (requ
          */
         Route.post = function (path, controllerOrCallback) {
             this.register("POST", path, controllerOrCallback);
+        };
+        /**
+         * Handle GET/POST Requests
+         *
+         * @param path
+         * @param controllerOrCallback
+         * @returns void
+         */
+        Route.redirect = function (from, pathTo) {
+            this.get(from, new redirect_1.default(pathTo));
         };
         /**
          * Handle GET/POST Requests

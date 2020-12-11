@@ -63,7 +63,7 @@ export default class Control
     public prefix: string = "/";
 
     /**
-     * Performs redirection
+     * Performs redirection and returns the path
      * 
      * @param path
      * @returns string

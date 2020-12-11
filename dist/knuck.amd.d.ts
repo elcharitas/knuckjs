@@ -395,7 +395,7 @@ declare module "controller/control" {
          */
         prefix: string;
         /**
-         * Performs redirection
+         * Performs redirection and returns the path
          *
          * @param path
          * @returns string
@@ -510,6 +510,31 @@ declare module "router/instance" {
         protected static register(method: string, path: string, controllerOrCallback: any): void;
     }
 }
+declare module "controller/redirect" {
+    import Controller from "controller/index";
+    /** Handy controller to handle redirections */
+    export default class RedirectController extends Controller {
+        /**
+         * Path to redirect to
+         *
+         * @var string
+         */
+        private redirectTo;
+        /**
+         * Takes the path to redirect as argument and saves it
+         *
+         * @param pathTo
+         * @returns void
+         */
+        constructor(pathTo: string);
+        /**
+         * Perform the redirection and return path redirecting to
+         *
+         * @returns string
+         */
+        invoke(): string;
+    }
+}
 declare module "router/index" {
     import RouteInstance from "router/instance";
     import { routePatternList } from "types";
@@ -549,6 +574,14 @@ declare module "router/index" {
          * @returns void
          */
         static post(path: string, controllerOrCallback: any): void;
+        /**
+         * Handle GET/POST Requests
+         *
+         * @param path
+         * @param controllerOrCallback
+         * @returns void
+         */
+        static redirect(from: string, pathTo: string): void;
         /**
          * Handle GET/POST Requests
          *
@@ -627,7 +660,12 @@ declare module "knuckjs" {
             prefix: string;
             redirect(path: string): string;
             middleware(names: string | string[]): boolean;
-            registerMiddleware(name: string, callback: import("knuckjs/src/types").middleware): number;
+            registerMiddleware(name: string, callback: import("knuckjs/src/types").middleware): number; /**
+             * Use to set path prefix
+             *
+             * @param prefix
+             * @returns string
+             */
             setInstance(instance?: any): any;
             getInstance(): any;
             getMiddleware(name: string): import("knuckjs/src/types").middleware;
