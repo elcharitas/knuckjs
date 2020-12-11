@@ -3,7 +3,7 @@ import { watchSuffix } from "../utils";
 import { globule } from "../types";
 
 /** modify window only for types */
-let globule: globule = window;
+let globule: globule = typeof window === "object" ? window: null;
 
 /** Route Controller is used to define multiple invokable methods for generating response */
 export default class Controller extends Control

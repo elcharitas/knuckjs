@@ -19,6 +19,8 @@ export = class Knuck extends Control
     {
         super();
 
+        this.setInstance(this)
+
         if (typeof callback === "function")
         {
             callback.call(this, Route, Controller)

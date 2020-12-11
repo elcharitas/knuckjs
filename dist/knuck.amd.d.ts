@@ -335,7 +335,7 @@ declare module "utils/index" {
      * @param prefix
      * @returns string
      */
-    let watchPrefix: (text: string, prefix: string) => string;
+    let watchPrefix: (text: string, prefix?: string) => string;
     /**
      * Append suffix to text if not already appended
      *
@@ -660,12 +660,7 @@ declare module "knuckjs" {
             prefix: string;
             redirect(path: string): string;
             middleware(names: string | string[]): boolean;
-            registerMiddleware(name: string, callback: import("knuckjs/src/types").middleware): number; /**
-             * Use to set path prefix
-             *
-             * @param prefix
-             * @returns string
-             */
+            registerMiddleware(name: string, callback: import("knuckjs/src/types").middleware): number;
             setInstance(instance?: any): any;
             getInstance(): any;
             getMiddleware(name: string): import("knuckjs/src/types").middleware;

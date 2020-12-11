@@ -155,7 +155,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var control_1 = __importDefault(require("./control"));
 var utils_1 = require("../utils");
 /** modify window only for types */
-var globule = window;
+var globule = typeof window === "object" ? window : null;
 /** Route Controller is used to define multiple invokable methods for generating response */
 var Controller = /** @class */ (function (_super) {
     __extends(Controller, _super);
@@ -508,6 +508,7 @@ module.exports = /** @class */ (function (_super) {
      */
     function Knuck(callback) {
         var _this = _super.call(this) || this;
+        _this.setInstance(_this);
         if (typeof callback === "function") {
             callback.call(_this, router_1.default, controller_1.default);
         }
@@ -1028,6 +1029,7 @@ exports.capslock = capslock;
  * @returns string
  */
 var watchPrefix = function (text, prefix) {
+    if (prefix === void 0) { prefix = ""; }
     if (text.indexOf(prefix) !== 0) {
         return prefix.concat(text);
     }

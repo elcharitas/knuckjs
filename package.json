@@ -5,7 +5,7 @@
   "main": "./lib/knuckjs.js",
   "typings": "./dist/knuck.amd.d.ts",
   "scripts": {
-    "test": "tsc --target es5 --esModuleInterop test.ts && node test.js",
+    "test": "ts-node src/test.ts",
     "build": "tsc -b",
     "build-amd": "tsc -b tsconfig-amd.json",
     "package": "browserify lib/knuckjs.js -s Knuck -o dist/knuck.js && uglifyjs -c -m -o dist/knuck.min.js dist/knuck.js",
@@ -16,7 +16,8 @@
   "devDependencies": {
     "typescript": "^4.0.0",
     "browserify": "^17.0.0",
-    "uglify-js": "^3.11.0"
+    "uglify-js": "^3.11.0",
+    "ts-node": "^9.1.0"
   },
   "optionalDependencies": {
     "nunjucks": "^3.0.0"

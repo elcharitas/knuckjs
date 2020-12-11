@@ -438,6 +438,7 @@ define("utils/index", ["require", "exports", "errors/index"], function (require,
      * @returns string
      */
     var watchPrefix = function (text, prefix) {
+        if (prefix === void 0) { prefix = ""; }
         if (text.indexOf(prefix) !== 0) {
             return prefix.concat(text);
         }
@@ -619,7 +620,7 @@ define("controller/index", ["require", "exports", "controller/control", "utils/i
     Object.defineProperty(exports, "__esModule", { value: true });
     control_1 = __importDefault(control_1);
     /** modify window only for types */
-    var globule = window;
+    var globule = typeof window === "object" ? window : null;
     /** Route Controller is used to define multiple invokable methods for generating response */
     var Controller = /** @class */ (function (_super) {
         __extends(Controller, _super);
@@ -869,6 +870,7 @@ define("knuckjs", ["require", "exports", "router/index", "controller/index", "co
          */
         function Knuck(callback) {
             var _this = _super.call(this) || this;
+            _this.setInstance(_this);
             if (typeof callback === "function") {
                 callback.call(_this, router_1.default, controller_3.default);
             }

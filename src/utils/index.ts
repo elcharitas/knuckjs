@@ -25,7 +25,7 @@ let capslock = (text: string, delimiter: string = " "): string => {
  * @param prefix
  * @returns string
  */
-let watchPrefix = (text: string, prefix: string): string => {
+let watchPrefix = (text: string, prefix: string = ""): string => {
     if (text.indexOf(prefix) !== 0)
     {
         return prefix.concat(text);
