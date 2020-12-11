@@ -52,12 +52,12 @@ var Control = /** @class */ (function () {
      * @returns string
      */
     Control.prototype.redirect = function (path) {
-        var _a;
-        var fullpath = utils_1.watchPrefix(path, (_a = this.$instance) === null || _a === void 0 ? void 0 : _a.prefix);
-        if (this.$instance.realpath === fullpath) {
-            utils_1.debug("460", "realpath", this.$instance);
+        var instance = this.getInstance();
+        var fullpath = utils_1.watchPrefix(path, instance.prefix);
+        if (instance.realpath === fullpath) {
+            utils_1.debug("460", "realpath", instance);
         }
-        return this.$instance.realpath = fullpath;
+        return instance.realpath = fullpath;
     };
     /**
      * Evaluates one or more middlewares.

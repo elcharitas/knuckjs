@@ -1,6 +1,6 @@
 <h1 align="center">👋 KnuckJS</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-0.0.7-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-green.svg?cacheSeconds=2592000" />
   <a href="https://github.com/elcharitas/knuckjs#readme" target="_blank">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
   </a>
@@ -29,21 +29,21 @@ yarn add knuckjs
 
 or directly include using a CDN like jsDelivr
 ``` html
-<script src="https://cdn.jsdelivr.net/npm/knuckjs@0.0.7/dist/knuck.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/knuckjs@0.1.0/dist/knuck.min.js"></script>
 ```
 
 ## Sample Usage
-Here is a sample `Hello Knuck` app. Full documentation is available [here](https://knuck.js.org/docs/latest).
+Here is a sample `Hello Knuck` app. Full documentation is available [here](https://knuck.js.org).
 ``` ts
 // Hello Knuck in Typescript
-import * as Knuck from "knuckjs";
+import Knuck from "knuckjs";
 
 let app: Knuck = new Knuck(function create(Route){
     // tell knuck where to look
     this.realpath = location.pathname;
 
     // listen for a path
-    Route.get('/', function(someVar){
+    Route.get('/', function(){
         return "Hello Knuck";
     });
 
@@ -71,6 +71,3 @@ Give a ⭐️ if this project helped you!
 
 Copyright © 2020 [Jonathan Irhodia](https://github.com/elcharitas).<br />
 This project is [MIT](https://github.com/elcharitas/knuckjs/blob/master/LICENSE) licensed.
-
-***
-_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_

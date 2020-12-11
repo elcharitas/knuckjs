@@ -70,14 +70,15 @@ export default class Control
      */
     public redirect(path: string): string
     {
-        let fullpath: string = watchPrefix(path, this.$instance?.prefix);
+        let instance: this = this.getInstance();
+        let fullpath: string = watchPrefix(path, instance.prefix);
 
-        if (this.$instance.realpath === fullpath)
+        if (instance.realpath === fullpath)
         {
-            debug("460", "realpath", this.$instance);
+            debug("460", "realpath", instance);
         }
         
-        return this.$instance.realpath = fullpath;
+        return instance.realpath = fullpath;
     }
 
     

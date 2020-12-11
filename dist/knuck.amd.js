@@ -534,12 +534,12 @@ define("controller/control", ["require", "exports", "utils/index"], function (re
          * @returns string
          */
         Control.prototype.redirect = function (path) {
-            var _a;
-            var fullpath = utils_3.watchPrefix(path, (_a = this.$instance) === null || _a === void 0 ? void 0 : _a.prefix);
-            if (this.$instance.realpath === fullpath) {
-                utils_3.debug("460", "realpath", this.$instance);
+            var instance = this.getInstance();
+            var fullpath = utils_3.watchPrefix(path, instance.prefix);
+            if (instance.realpath === fullpath) {
+                utils_3.debug("460", "realpath", instance);
             }
-            return this.$instance.realpath = fullpath;
+            return instance.realpath = fullpath;
         };
         /**
          * Evaluates one or more middlewares.
