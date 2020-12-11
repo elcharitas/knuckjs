@@ -58,15 +58,29 @@ class Route extends RouteInstance
     }
     
     /**
-     * Handle GET/POST Requests
+     * Handle Redirection
      * 
      * @param path 
+     * @param pathTo
+     * @returns void
+     */
+    public static redirect(path: string, pathTo: string): void
+    {
+        this.get(path, new RedirectController(pathTo));
+    }
+
+    /**
+     * Handle Fallback routes
+     * 
      * @param controllerOrCallback
      * @returns void
      */
-    public static redirect(from: string, pathTo: string): void
+    public static fallback(controllerOrCallback: any): void
     {
-        this.get(from, new RedirectController(pathTo));
+        let patternName: string = Math.ceil(1000 * Math.random()).toString();
+        let path: string = `/{${patternName}}`;
+        this.pattern(patternName, ".*");
+        this.get(path, controllerOrCallback);
     }
 
     /**

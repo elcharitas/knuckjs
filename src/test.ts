@@ -9,7 +9,7 @@ let app: Knuck = new Knuck(function create(this: Knuck, Route){
     // testing redirection...
     Route.redirect("/", "/home");
 
-    Route.get('/{fallback}', function (path: string) {
+    Route.fallback(function (path: string) {
         return `Hello Knuck! Welcome to ${path}`
     });
 

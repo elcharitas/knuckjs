@@ -8,8 +8,8 @@
     "test": "ts-node src/test.ts",
     "build": "tsc -b",
     "build-amd": "tsc -b tsconfig-amd.json",
-    "package": "browserify lib/knuckjs.js -s Knuck -o dist/knuck.js && uglifyjs -c -m -o dist/knuck.min.js dist/knuck.js",
-    "bundle": "npm run build && npm run build-amd && npm run package"
+    "bundle": "browserify lib/knuckjs.js -s Knuck -o dist/knuck.js && uglifyjs -c -m -o dist/knuck.min.js dist/knuck.js",
+    "package": "npm run build && npm run build-amd && npm run bundle"
   },
   "author": "Jonathan Irhodia",
   "license": "MIT",

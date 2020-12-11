@@ -575,13 +575,20 @@ declare module "router/index" {
          */
         static post(path: string, controllerOrCallback: any): void;
         /**
-         * Handle GET/POST Requests
+         * Handle Redirection
          *
          * @param path
+         * @param pathTo
+         * @returns void
+         */
+        static redirect(path: string, pathTo: string): void;
+        /**
+         * Handle Fallback routes
+         *
          * @param controllerOrCallback
          * @returns void
          */
-        static redirect(from: string, pathTo: string): void;
+        static fallback(controllerOrCallback: any): void;
         /**
          * Handle GET/POST Requests
          *
