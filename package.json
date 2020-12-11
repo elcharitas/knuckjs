@@ -1,7 +1,7 @@
 {
   "name": "knuckjs",
   "version": "0.0.7",
-  "description": "Simple JavaScript Framework to build lightning fast SPAs using any template engine",
+  "description": "Simple JavaScript Framework to build lightning fast CSRs using any template engine",
   "main": "./lib/knuckjs.js",
   "typings": "./dist/knuck.amd.d.ts",
   "scripts": {

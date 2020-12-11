@@ -618,7 +618,7 @@ define("controller/index", ["require", "exports", "controller/control", "utils/i
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     control_1 = __importDefault(control_1);
-    /** modify only for types */
+    /** modify window only for types */
     var globule = window;
     /** Route Controller is used to define multiple invokable methods for generating response */
     var Controller = /** @class */ (function (_super) {

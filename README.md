@@ -15,7 +15,7 @@
   </a>
 </p>
 
-> KnuckJS is a Simple and lightweight JavaScript Framework to build lightning fast SPAs using any template engine [Learn more](https://knuck.js.org)
+> KnuckJS is a Simple and lightweight JavaScript Framework to build lightning fast CSRs using any template engine [Learn more](https://knuck.js.org)
 
 ## Install
 

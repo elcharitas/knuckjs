@@ -1,0 +1,9 @@
+{
+    "files.exclude": {
+        "**/dist": true,
+        "**/lib": true
+    },
+    "editor.fontSize": 13,
+    "editor.fastScrollSensitivity": 7,
+    "editor.renameOnType": true
+}

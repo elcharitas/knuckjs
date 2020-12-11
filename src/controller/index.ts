@@ -2,7 +2,7 @@ import Control from "./control"
 import { watchSuffix } from "../utils";
 import { globule } from "../types";
 
-/** modify only for types */
+/** modify window only for types */
 let globule: globule = window;
 
 /** Route Controller is used to define multiple invokable methods for generating response */

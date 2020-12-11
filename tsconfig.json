@@ -1,15 +1,14 @@
 {
   "include": [
-    "./src/*",
-    "./src/*/*"
+    "./src/**/*"
   ],
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
-    "outDir": "lib",
+    "moduleResolution": "node",
+    "outDir": "./lib",
     "strict": true,
     "strictNullChecks": false,
-    "esModuleInterop": true,
-    "moduleResolution": "node"
+    "esModuleInterop": true
   }
 }
