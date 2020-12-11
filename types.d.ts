@@ -251,6 +251,12 @@ declare module "resolve/index" {
          */
         pathName: string;
         /**
+         * The current Controller
+         *
+         * @var Controller
+         */
+        controller?: Controller;
+        /**
          * Receive currentRoute and Handles it
          *
          * @param currentRoute
@@ -263,6 +269,8 @@ declare module "types" {
     import Controller from "controller/index";
     import Pathfinder from "paths/index";
     import Resolver from "resolve/index";
+    /** Type definition for realpaths */
+    type path = string | (() => string);
     /** Type definition for route callback */
     type routeCallback = (resolve: Resolver) => any;
     /** Type definition for route callback */
@@ -309,7 +317,7 @@ declare module "types" {
     interface obj extends Object {
         [x: string]: any;
     }
-    export { route, routeList, routePack, routeHandle, routeCallback, routePattern, routePatternList, middleware, middlewareRecord, globule, obj };
+    export { path, route, routeList, routePack, routeHandle, routeCallback, routePattern, routePatternList, middleware, middlewareRecord, globule, obj };
 }
 declare module "utils/index" {
     /**
@@ -347,7 +355,7 @@ declare module "utils/index" {
     export { capslock, watchPrefix, watchSuffix, debug };
 }
 declare module "controller/control" {
-    import { middleware, middlewareRecord } from "types";
+    import { path, middleware, middlewareRecord } from "types";
     /**  */
     export default class Control {
         /**
@@ -367,7 +375,19 @@ declare module "controller/control" {
          *
          * @var string
          */
-        realpath: string;
+        protected _realpath: path;
+        /**
+         * Get accessor for realpath
+         *
+         * @var path
+         */
+        get realpath(): path;
+        /**
+         * Set accessor for realpath
+         *
+         * @returns void
+         */
+        set realpath(newPath: path);
         /**
          * Watch out for realpath prefix
          *
@@ -562,21 +582,9 @@ declare module "router/index" {
 declare module "knuckjs" {
     import Route from "router/index";
     import Controller from "controller/index";
-    import { routePack, routeCallback } from "types";
+    import { path, routePack, routeCallback } from "types";
     const _default: {
         new (callback?: (BaseRoute: typeof Route, BaseController: typeof Controller) => any): {
-            /**
-             * The realpath for the Application
-             *
-             * @var string
-             */
-            realpath: string;
-            /**
-             * Watch out for realpath prefix
-             *
-             * @var string
-             */
-            prefix: string;
             /**
              * Output the resolved routes
              *
@@ -598,8 +606,25 @@ declare module "knuckjs" {
              * @returns void
              */
             run(callback?: routeCallback): void;
+            /**
+             * Use to set the realpath optionally
+             *
+             * @param wick
+             * @returns path
+             */
+            setWick(wick: path): path;
+            /**
+             * Use to set path prefix
+             *
+             * @param prefix
+             * @returns string
+             */
+            setPrefix(prefix: string): string;
             $middlewares: import("knuckjs/src/types").middlewareRecord[];
             $instance: any;
+            _realpath: path;
+            realpath: path;
+            prefix: string;
             redirect(path: string): string;
             middleware(names: string | string[]): boolean;
             registerMiddleware(name: string, callback: import("knuckjs/src/types").middleware): number;

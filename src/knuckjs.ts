@@ -4,25 +4,11 @@ import Control from "./controller/control";
 import Pathfinder from "./paths";
 import Resolver from "./resolve";
 import { debug, watchPrefix } from "./utils";
-import { routePack, routeCallback } from "./types";
+import { path, routePack, routeCallback } from "./types";
 
 /** Knucks is what handles the rest... */
 export = class Knuck extends Control
 {
-    /**
-     * The realpath for the Application
-     * 
-     * @var string
-     */
-    public realpath: string = "";
-
-    /**
-     * Watch out for realpath prefix
-     * 
-     * @var string
-     */
-    public prefix: string = "/";
-
     /**
      * Provide an easy way to register routes et al.
      * 
@@ -32,8 +18,6 @@ export = class Knuck extends Control
     constructor(callback?: (BaseRoute: typeof Route, BaseController: typeof Controller) => any)
     {
         super();
-
-        this.setInstance();
 
         if (typeof callback === "function")
         {
@@ -51,7 +35,7 @@ export = class Knuck extends Control
         let currentRoute: routePack = null;
 
         Route.getInstance().all().forEach(route => {
-            let path = new Pathfinder(watchPrefix(route.path, this.prefix), this.realpath);
+            let path = new Pathfinder(watchPrefix(route.path, this.prefix), this.realpath as string);
             path.setPatterns(Route.getPatterns());
             if (path.matches())
             {
@@ -92,7 +76,7 @@ export = class Knuck extends Control
         if (currentRoute?.path instanceof Pathfinder)
         {
             Route.currentRoute = currentRoute.route;
-            callback.apply(this, [new Resolver(currentRoute)]);
+            callback.apply(this, [new Resolver(currentRoute, this)]);
         }
     }
 
@@ -107,5 +91,27 @@ export = class Knuck extends Control
         this.render(callback);
 
         setInterval(() => this.render(callback), 1005);
+    }
+
+    /**
+     * Use to set the realpath optionally
+     * 
+     * @param wick
+     * @returns path
+     */
+    public setWick(wick: path): path
+    {
+        return this._realpath = wick;
+    }
+
+    /**
+     * Use to set path prefix
+     * 
+     * @param prefix
+     * @returns string
+     */
+    public setPrefix(prefix: string): string
+    {
+        return this.prefix = prefix;
     }
 }

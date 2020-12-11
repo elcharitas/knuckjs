@@ -392,8 +392,9 @@ define("resolve/index", ["require", "exports", "controller/index", "paths/index"
                 if (route.callback) {
                     _this.content = route.callback.apply(_this, path.getVarsList());
                 }
-                else if (route.controller) {
-                    _this.content = (_a = route.controller.setInstance(_this.getInstance())).invoke.apply(_a, path.getVarsList());
+                else if ((_this.controller = route.controller) instanceof controller_1.default) {
+                    _this.controller.setInstance(_this.getInstance());
+                    _this.content = (_a = _this.controller).invoke.apply(_a, path.getVarsList());
                 }
             }
             return _this;
@@ -490,7 +491,7 @@ define("controller/control", ["require", "exports", "utils/index"], function (re
              *
              * @var string
              */
-            this.realpath = "";
+            this._realpath = "";
             /**
              * Watch out for realpath prefix
              *
@@ -498,6 +499,33 @@ define("controller/control", ["require", "exports", "utils/index"], function (re
              */
             this.prefix = "/";
         }
+        Object.defineProperty(Control.prototype, "realpath", {
+            /**
+             * Get accessor for realpath
+             *
+             * @var path
+             */
+            get: function () {
+                var path = this._realpath;
+                if (typeof path === "function") {
+                    path = path.call(this);
+                }
+                if (!path) {
+                    return utils_3.watchSuffix(this.prefix, "/");
+                }
+                return path;
+            },
+            /**
+             * Set accessor for realpath
+             *
+             * @returns void
+             */
+            set: function (newPath) {
+                this._realpath = newPath;
+            },
+            enumerable: false,
+            configurable: true
+        });
         /**
          * Performs redirection
          *
@@ -551,7 +579,7 @@ define("controller/control", ["require", "exports", "utils/index"], function (re
          * @returns instance
          */
         Control.prototype.setInstance = function (instance) {
-            return this.$instance = instance || this;
+            return instance ? this.$instance = instance : null;
         };
         /**
          * Gets the global instance
@@ -793,19 +821,6 @@ define("knuckjs", ["require", "exports", "router/index", "controller/index", "co
          */
         function Knuck(callback) {
             var _this = _super.call(this) || this;
-            /**
-             * The realpath for the Application
-             *
-             * @var string
-             */
-            _this.realpath = "";
-            /**
-             * Watch out for realpath prefix
-             *
-             * @var string
-             */
-            _this.prefix = "/";
-            _this.setInstance();
             if (typeof callback === "function") {
                 callback.call(_this, router_1.default, controller_3.default);
             }
@@ -855,7 +870,7 @@ define("knuckjs", ["require", "exports", "router/index", "controller/index", "co
             }
             if ((currentRoute === null || currentRoute === void 0 ? void 0 : currentRoute.path) instanceof paths_2.default) {
                 router_1.default.currentRoute = currentRoute.route;
-                callback.apply(this, [new resolve_1.default(currentRoute)]);
+                callback.apply(this, [new resolve_1.default(currentRoute, this)]);
             }
         };
         /**
@@ -868,6 +883,24 @@ define("knuckjs", ["require", "exports", "router/index", "controller/index", "co
             var _this = this;
             this.render(callback);
             setInterval(function () { return _this.render(callback); }, 1005);
+        };
+        /**
+         * Use to set the realpath optionally
+         *
+         * @param wick
+         * @returns path
+         */
+        Knuck.prototype.setWick = function (wick) {
+            return this._realpath = wick;
+        };
+        /**
+         * Use to set path prefix
+         *
+         * @param prefix
+         * @returns string
+         */
+        Knuck.prototype.setPrefix = function (prefix) {
+            return this.prefix = prefix;
         };
         return Knuck;
     }(control_2.default));

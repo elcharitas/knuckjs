@@ -2,6 +2,9 @@ import Controller from "./controller";
 import Pathfinder from "./paths";
 import Resolver from "./resolve";
 
+/** Type definition for realpaths */
+type path = string | (() => string);
+
 /** Type definition for route callback */
 type routeCallback = (resolve: Resolver) => any;
 
@@ -45,6 +48,7 @@ interface obj extends Object
 }
 
 export {
+    path,
     route,
     routeList,
     routePack,

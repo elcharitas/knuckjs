@@ -21,6 +21,13 @@ class Resolver extends Controller
     public pathName: string;
 
     /**
+     * The current Controller
+     * 
+     * @var Controller
+     */
+    public controller?: Controller;
+
+    /**
      * Receive currentRoute and Handles it
      * 
      * @param currentRoute
@@ -42,9 +49,10 @@ class Resolver extends Controller
             {
                 this.content = route.callback.apply(this, path.getVarsList());
             }
-            else if (route.controller)
+            else if ((this.controller = route.controller) instanceof Controller)
             {
-                this.content = route.controller.setInstance(this.getInstance()).invoke(...path.getVarsList());
+                this.controller.setInstance(this.getInstance());
+                this.content = this.controller.invoke(...path.getVarsList());
             }
         }
     }

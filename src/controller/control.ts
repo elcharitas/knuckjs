@@ -1,5 +1,5 @@
-import { debug, watchPrefix } from "../utils";
-import { middleware, middlewareRecord } from "../types";
+import { debug, watchPrefix, watchSuffix } from "../utils";
+import { path, middleware, middlewareRecord } from "../types";
 
 /**  */
 export default class Control
@@ -23,7 +23,37 @@ export default class Control
      * 
      * @var string
      */
-    public realpath: string = "";
+    protected _realpath: path = "";
+
+    /**
+     * Get accessor for realpath
+     * 
+     * @var path
+     */
+    public get realpath(): path
+    {
+        let path: path = this._realpath;
+
+        if (typeof path === "function") {
+            path = path.call(this);
+        }
+
+        if (!path) {
+            return watchSuffix(this.prefix, "/")
+        }
+
+        return path;
+    }
+
+    /**
+     * Set accessor for realpath
+     * 
+     * @returns void
+     */
+    public set realpath(newPath: path)
+    {
+        this._realpath = newPath;
+    }
 
     /**
      * Watch out for realpath prefix
@@ -46,7 +76,7 @@ export default class Control
         {
             debug("460", "realpath", this.$instance);
         }
-
+        
         return this.$instance.realpath = fullpath;
     }
 
@@ -100,7 +130,7 @@ export default class Control
      */
     public setInstance(instance?: this): this
     {
-        return this.$instance = instance || this;
+        return instance ? this.$instance = instance: null;
     }
 
     /**
