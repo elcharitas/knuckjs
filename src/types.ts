@@ -3,7 +3,7 @@ import Pathfinder from "./paths";
 import Resolver from "./resolve";
 
 /** Type definition for realpaths */
-type path = string | (() => string);
+type path = string | ((path?: string) => string);
 
 /** Type definition for route callback */
 type routeCallback = (resolve: Resolver) => any;

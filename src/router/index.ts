@@ -1,6 +1,8 @@
 import RouteInstance from "./instance";
 import RedirectController from "../controller/redirect";
-import { routePatternList } from "../types";
+import Pathfinder from "../paths";
+import { watchPrefix } from "../utils";
+import { path, routePack, routePatternList } from "../types";
 
 /** App Route implemntation class */
 export default
@@ -94,6 +96,28 @@ class Route extends RouteInstance
     {
         this.get(path, controllerOrCallback)
         this.post(path, controllerOrCallback);
+    }
+
+    /**
+     * Find a route that best matches a path using an optional prefix and return the pack
+     * 
+     * @param currentPath 
+     * @param prefix 
+     * @returns routePack
+     */
+    public static find(currentPath: path, prefix: string = "/"): routePack
+    {
+        let bestMatch: routePack = null;
+
+        this.getInstance().all().forEach(route => {
+            let path = new Pathfinder(watchPrefix(route.path, prefix), currentPath as string);
+            path.setPatterns(this.getPatterns());
+            if (path.matches()) {
+                bestMatch = { route, path };
+            }
+        });
+
+        return bestMatch;
     }
 
     /**
