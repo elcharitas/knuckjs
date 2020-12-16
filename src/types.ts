@@ -2,13 +2,18 @@ import Controller from "./controller";
 import Pathfinder from "./paths";
 import Resolver from "./resolve";
 
+/** Object interface for string indexes */
+interface obj extends Object {
+    [x: string]: any
+}
+
 /** Type definition for realpaths */
 type path = string | ((path?: string) => string);
 
 /** Type definition for route callback */
 type routeCallback = (resolve: Resolver) => any;
 
-/** Type definition for route callback */
+/** Type definition for route handlers */
 type routeHandle = (...args: any[]) => any;
 
 /** Type definition for middleware callback */
@@ -39,13 +44,7 @@ type nunjucksRender = (name: string, context: object) => string;
 type customGlobals = { nunjucks?: { render: nunjucksRender} };
 
 /** Modified window object */
-type globule = Window & typeof globalThis & customGlobals;
-
-/** Object interface for string indexes */
-interface obj extends Object
-{
-    [x: string]: any
-}
+type globule = obj & Window & typeof globalThis & customGlobals;
 
 export {
     path,

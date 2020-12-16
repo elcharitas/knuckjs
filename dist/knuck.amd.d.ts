@@ -28,22 +28,22 @@ declare module "errors/base" {
         /**
          * Prepares the error message
          *
-         * @param msg
+         * @param {string} msg - the message to output
          * @returns void
          */
         constructor(msg?: string);
         /**
          * Sets the error prefix
          *
-         * @param prefix
+         * @param {string} prefix - the prefix to add to error messages
          * @returns string
          */
         setPrefix(prefix: string): string;
         /**
          * Sets the value of the error message
          *
-         * @param msg
-         * @param args
+         * @param {string} msg - the error message which may contain optional flag indexes for formatting e.g %1
+         * @param {string[]} args - list of args to use when formating
          * @returns string
          */
         setMessage(msg: string, args?: Array<string | number>): string;
@@ -78,10 +78,10 @@ declare module "errors/instance" {
          */
         helplink: string;
         /**
-         * Initialize the new error
+         * Initialize the new error when a wron type or instance is specified for `name`
          *
-         * @param name
-         * @param type
+         * @param {string} name - name of the instance
+         * @param {string} type - the expected instance
          * @returns void
          */
         constructor(name: string, type?: string);
@@ -116,10 +116,11 @@ declare module "errors/route" {
          */
         helplink: string;
         /**
-         * Initialize the new error
+         * Initialize the new error when a Route/routepack property is lacking definition
          *
-         * @param name
-         * @param type
+         * @param {string} name - name of the property
+         * @param {any} value - the Route/routepack object/class
+         * @param {string} type - the type of definition
          * @returns void
          */
         constructor(name: string, value: any, type?: string);
@@ -169,7 +170,8 @@ declare module "paths/index" {
         /**
          * Discover variables and parse
          *
-         * @param path
+         * @param {string} path - the route path, which may contain variables describe in braces {myVar}
+         * @param {string} realpath - the real path to test for
          */
         constructor(path: string, realpath?: string);
         /**
@@ -181,29 +183,29 @@ declare module "paths/index" {
         /**
          * Gets the regex for a pattern name
          *
-         * @param name
+         * @param {string} name - name of the pattern
          * @returns RegExp
          */
         regex(name: string): RegExp;
         /**
-         * Adds a new patern
+         * Adds a new pattern using `name` and `pattern`
          *
-         * @param name
-         * @param pattern
+         * @param {string} name - name of the pattern
+         * @param {string} pattern - the regexp pattern to index
          * @returns string
          */
         setPattern(name: string, pattern: string): string;
         /**
          * Import a set of patterns
          *
-         * @param list
-         * @returns void
+         * @param {routePatternList} list - list of patterns to inherit
+         * @returns boolean
          */
-        setPatterns(list: routePatternList): void;
+        setPatterns(list: routePatternList): boolean;
         /**
          * Gets a variable from a realpath
          *
-         * @param name
+         * @param {string} name - name of the variable
          * @returns string
          */
         getVar(name: string): string;
@@ -220,9 +222,9 @@ declare module "paths/index" {
          */
         getVarsList(): string[];
         /**
-         * Sets the parts list
+         * Sets the parts list using realpath `path`
          *
-         * @param path
+         * @param {string} path
          * @return string[]
          */
         setPath(path: string): string[];
@@ -259,7 +261,7 @@ declare module "resolve/index" {
         /**
          * Receive currentRoute and Handles it
          *
-         * @param currentRoute
+         * @param {routePack} currentRoute - routePack of current/desired route to resolve
          * @returns void
          */
         constructor(currentRoute: routePack, instance?: any);
@@ -269,11 +271,15 @@ declare module "types" {
     import Controller from "controller/index";
     import Pathfinder from "paths/index";
     import Resolver from "resolve/index";
+    /** Object interface for string indexes */
+    interface obj extends Object {
+        [x: string]: any;
+    }
     /** Type definition for realpaths */
-    type path = string | (() => string);
+    type path = string | ((path?: string) => string);
     /** Type definition for route callback */
     type routeCallback = (resolve: Resolver) => any;
-    /** Type definition for route callback */
+    /** Type definition for route handlers */
     type routeHandle = (...args: any[]) => any;
     /** Type definition for middleware callback */
     type middleware = (next: middleware) => boolean;
@@ -312,47 +318,46 @@ declare module "types" {
         };
     };
     /** Modified window object */
-    type globule = Window & typeof globalThis & customGlobals;
-    /** Object interface for string indexes */
-    interface obj extends Object {
-        [x: string]: any;
-    }
+    type globule = obj & Window & typeof globalThis & customGlobals;
     export { path, route, routeList, routePack, routeHandle, routeCallback, routePattern, routePatternList, middleware, middlewareRecord, globule, obj };
 }
 declare module "utils/index" {
+    import { globule } from "types";
+    /** modify window only for types */
+    let globule: globule;
     /**
-     * Tentatively capitalize first word in text
+     * Tentatively capitalize first character of words in `text`
      *
-     * @param text
-     * @param delimiter
+     * @param {string} text - the text to capitalize
+     * @param {string} delimiter - the word delimiter defaults to a single whitespace character " "
      * @returns string
      */
     let capslock: (text: string, delimiter?: string) => string;
     /**
-     * Prepend prefix to text if not already Prepended
+     * Prepend prefix to `text` if not already Prepended
      *
-     * @param text
-     * @param prefix
+     * @param {string} text - The text to modify
+     * @param {string} prefix - the prefix to prepend
      * @returns string
      */
     let watchPrefix: (text: string, prefix?: string) => string;
     /**
-     * Append suffix to text if not already appended
+     * Append suffix to `text` if not already appended
      *
-     * @param text
-     * @param suffix
+     * @param {string} text - The text to modify
+     * @param {string} suffix - the suffix to append
      * @returns string
      */
     let watchSuffix: (text: string, suffix: string) => string;
     /**
      * Throw debug informations
      *
-     * @param errorType
-     * @param args
+     * @param {string} errorType - The error type code
+     * @param {any[]} ...args
      * @returns void
      */
     let debug: (errorType: string, ...args: Array<any>) => void;
-    export { capslock, watchPrefix, watchSuffix, debug };
+    export { capslock, watchPrefix, watchSuffix, debug, globule };
 }
 declare module "controller/control" {
     import { path, middleware, middlewareRecord } from "types";
@@ -397,7 +402,7 @@ declare module "controller/control" {
         /**
          * Performs redirection and returns the path
          *
-         * @param path
+         * @param {string} path - path to redirect to
          * @returns string
          */
         redirect(path: string): string;
@@ -405,22 +410,22 @@ declare module "controller/control" {
          * Evaluates one or more middlewares.
          * returns true on success, otherwise false
          *
-         * @param names
+         * @param {string|string[]} names - the name of the middleware or a list of names
          * @returns boolean
          */
         middleware(names: string | string[]): boolean;
         /**
          * Regiters a middleware into current control and returns new middleware count
          *
-         * @param name
-         * @param callback
+         * @param {string} name - name of the middleware
+         * @param {middleware} callback - the function to call once the middleware is activated
          * @returns number
          */
         registerMiddleware(name: string, callback: middleware): number;
         /**
-         * Sets the global instance
+         * Sets the global instance to a new one
          *
-         * @param instance
+         * @param {this} instance - the new instance to use
          * @returns instance
          */
         setInstance(instance?: this): this;
@@ -433,7 +438,7 @@ declare module "controller/control" {
         /**
          * Gets a middleware callback in the global/local instance by its name
          *
-         * @param name
+         * @param {string} name - name of the middleware
          * @returns middleware
          */
         protected getMiddleware(name: string): middleware;
@@ -446,15 +451,15 @@ declare module "controller/index" {
         /**
          * Method to be called by default
          *
-         * @param _args - Route variables passed to the method
+         * @param {any[]} ..._args - Route variables passed to the method
          * @returns string
          */
         invoke(..._args: any[]): string;
         /**
          * Use to render nunjucks templates
          *
-         * @param templateName
-         * @param context
+         * @param {string} templateName - name of the template
+         * @param {object} context - an object of variables to pass into the context
          * @returns string
          */
         view(templateName: string, context?: object): string;
@@ -482,7 +487,7 @@ declare module "router/instance" {
          */
         static currentRoute: route;
         /**
-         * Constructor for singleton routes class
+         * Constructor for routes instance
          *
          * @returns void
          */
@@ -502,9 +507,9 @@ declare module "router/instance" {
         /**
          * Register new HTTP Requests
          *
-         * @param method
-         * @param path
-         * @param controllerOrCallback
+         * @param {string} method - the allowed method can be "GET" or "POST"
+         * @param {string} path - the path to listen for
+         * @param {Controller|Function} controllerOrCallback - The initialized controller to use or a callback function
          * @returns void
          */
         protected static register(method: string, path: string, controllerOrCallback: any): void;
@@ -523,12 +528,12 @@ declare module "controller/redirect" {
         /**
          * Takes the path to redirect as argument and saves it
          *
-         * @param pathTo
+         * @param {string} pathTo - path to redirect to
          * @returns void
          */
         constructor(pathTo: string);
         /**
-         * Perform the redirection and return path redirecting to
+         * Redirect and return path redirecting to
          *
          * @returns string
          */
@@ -537,7 +542,7 @@ declare module "controller/redirect" {
 }
 declare module "router/index" {
     import RouteInstance from "router/instance";
-    import { routePatternList } from "types";
+    import { routePack, routePatternList } from "types";
     /** App Route implemntation class */
     export default class Route extends RouteInstance {
         /**
@@ -561,48 +566,56 @@ declare module "router/index" {
         /**
          * Handle GET Requests
          *
-         * @param path
-         * @param controllerOrCallback
+         * @param {string} path - the path to listen for which may contain variables in braces e.g: {myVar}
+         * @param {Controller|Function} controllerOrCallback - The initialized controller to use or a callback function
          * @returns void
          */
         static get(path: string, controllerOrCallback: any): void;
         /**
          * Handle POST Requests
          *
-         * @param path
-         * @param controllerOrCallback
+         * @param {string} path - the path to listen for which may contain variables in braces e.g: {myVar}
+         * @param {Controller|Function} controllerOrCallback - The initialized controller to use or a callback function
          * @returns void
          */
         static post(path: string, controllerOrCallback: any): void;
         /**
-         * Handle Redirection
+         * Handle Redirection from a `path` to a `pathTo`
          *
-         * @param path
-         * @param pathTo
+         * @param {string} path - the path to listen for which may contain variables in braces e.g: {myVar}
+         * @param {string} pathTo - the path to redirect to
          * @returns void
          */
         static redirect(path: string, pathTo: string): void;
         /**
-         * Handle Fallback routes
+         * Handle Fallback routes, useful for error pages
          *
-         * @param controllerOrCallback
+         * @param {Controller|Function} controllerOrCallback - The initialized controller to use or a callback function
          * @returns void
          */
         static fallback(controllerOrCallback: any): void;
         /**
          * Handle GET/POST Requests
          *
-         * @param path
-         * @param controllerOrCallback
+         * @param {string} path - the path to listen for which may contain variables in braces e.g: {myVar}
+         * @param {Controller|Function} controllerOrCallback - The initialized controller to use or a callback function
          * @returns void
          */
         static any(path: string, controllerOrCallback: any): void;
         /**
-         * Create new pattern
+         * Find a route that best matches a path using an optional prefix and return the pack
          *
-         * @param name
-         * @param pattern
-         * @returns number
+         * @param {string} currentPath - the path to find a match for
+         * @param {string} prefix - optional prefix for routes
+         * @returns routePack
+         */
+        static find(currentPath: string, prefix?: string): routePack;
+        /**
+         * Create new pattern using `name` and `pattern` and returns its index
+         *
+         * @param {string} name - name of the pattern
+         * @param {string} pattern - the regexp pattern string
+         * @returns number - the index of new pattern
          */
         static pattern(name: string, pattern: string): number;
         /**
@@ -626,44 +639,62 @@ declare module "knuckjs" {
     const _default: {
         new (callback?: (BaseRoute: typeof Route, BaseController: typeof Controller) => any): {
             /**
-             * Output the resolved routes
+             * Wick for controlling realpath setting
              *
-             * @returns Resolve
+             * @var () => path
              */
-            output(): routePack;
+            _pathWick: (newPath: string) => string;
             /**
-             * Render the current route
+             * Get accessor for realpath
              *
-             * @param currentRoute
-             * @param callback
+             * @var path
+             */
+            realpath: string;
+            /**
+             * Exports out the Utils, Route and Controller
+             *
+             * @returns object
+             */
+            export(): object;
+            /**
+             * Get the current route and returns it pack
+             *
+             * @returns routePack
+             */
+            currentRoute(): routePack;
+            /**
+             * Render the current route once using `callback` unless `forceRender` is set as true
+             *
+             * @param callback - This will be called after rendering. Takes the resolver as its only argument
+             * @param currentRoute - The current route pack. Defaults to Knuck.currentRoute()
+             * @param forceRender - Set as true to forcefully render the current route. Default: false
              * @returns void
              */
             render(callback?: routeCallback, currentRoute?: routePack, forceRender?: boolean): void;
             /**
-             * Single Page Application output
+             * Continuously watch routes and render
              *
-             * @param callback
+             * @param callback - to be called when rendering
              * @returns void
              */
             run(callback?: routeCallback): void;
             /**
-             * Use to set the realpath optionally
+             * Use to set the realpath and its wick optionally
              *
-             * @param wick
+             * @param wick - callback to handle realpaths
              * @returns path
              */
             setWick(wick: path): path;
             /**
              * Use to set path prefix
              *
-             * @param prefix
+             * @param prefix - string to be prepended to a path if its not there already
              * @returns string
              */
             setPrefix(prefix: string): string;
             $middlewares: import("knuckjs/src/types").middlewareRecord[];
             $instance: any;
             _realpath: path;
-            realpath: path;
             prefix: string;
             redirect(path: string): string;
             middleware(names: string | string[]): boolean;

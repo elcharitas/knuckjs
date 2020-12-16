@@ -25,14 +25,7 @@ var Control = /** @class */ (function () {
          * @var path
          */
         get: function () {
-            var path = this._realpath;
-            if (typeof path === "function") {
-                path = path.call(this);
-            }
-            if (!path) {
-                return utils_1.watchSuffix(this.prefix, "/");
-            }
-            return path;
+            return this._realpath;
         },
         /**
          * Set accessor for realpath
@@ -48,7 +41,7 @@ var Control = /** @class */ (function () {
     /**
      * Performs redirection and returns the path
      *
-     * @param path
+     * @param {string} path - path to redirect to
      * @returns string
      */
     Control.prototype.redirect = function (path) {
@@ -63,7 +56,7 @@ var Control = /** @class */ (function () {
      * Evaluates one or more middlewares.
      * returns true on success, otherwise false
      *
-     * @param names
+     * @param {string|string[]} names - the name of the middleware or a list of names
      * @returns boolean
      */
     Control.prototype.middleware = function (names) {
@@ -78,8 +71,8 @@ var Control = /** @class */ (function () {
     /**
      * Regiters a middleware into current control and returns new middleware count
      *
-     * @param name
-     * @param callback
+     * @param {string} name - name of the middleware
+     * @param {middleware} callback - the function to call once the middleware is activated
      * @returns number
      */
     Control.prototype.registerMiddleware = function (name, callback) {
@@ -92,9 +85,9 @@ var Control = /** @class */ (function () {
         return this.$middlewares.push({ name: name, callback: callback });
     };
     /**
-     * Sets the global instance
+     * Sets the global instance to a new one
      *
-     * @param instance
+     * @param {this} instance - the new instance to use
      * @returns instance
      */
     Control.prototype.setInstance = function (instance) {
@@ -111,7 +104,7 @@ var Control = /** @class */ (function () {
     /**
      * Gets a middleware callback in the global/local instance by its name
      *
-     * @param name
+     * @param {string} name - name of the middleware
      * @returns middleware
      */
     Control.prototype.getMiddleware = function (name) {
@@ -154,8 +147,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var control_1 = __importDefault(require("./control"));
 var utils_1 = require("../utils");
-/** modify window only for types */
-var globule = typeof window === "object" ? window : null;
 /** Route Controller is used to define multiple invokable methods for generating response */
 var Controller = /** @class */ (function (_super) {
     __extends(Controller, _super);
@@ -165,7 +156,7 @@ var Controller = /** @class */ (function (_super) {
     /**
      * Method to be called by default
      *
-     * @param _args - Route variables passed to the method
+     * @param {any[]} ..._args - Route variables passed to the method
      * @returns string
      */
     Controller.prototype.invoke = function () {
@@ -178,15 +169,15 @@ var Controller = /** @class */ (function (_super) {
     /**
      * Use to render nunjucks templates
      *
-     * @param templateName
-     * @param context
+     * @param {string} templateName - name of the template
+     * @param {object} context - an object of variables to pass into the context
      * @returns string
      */
     Controller.prototype.view = function (templateName, context) {
         var _a;
-        if (typeof globule === "object" && typeof (globule === null || globule === void 0 ? void 0 : globule.nunjucks) === "object") {
+        if (typeof utils_1.globule === "object" && typeof (utils_1.globule === null || utils_1.globule === void 0 ? void 0 : utils_1.globule.nunjucks) === "object") {
             templateName = utils_1.watchSuffix(templateName, ".njk");
-            return (_a = globule === null || globule === void 0 ? void 0 : globule.nunjucks) === null || _a === void 0 ? void 0 : _a.render(templateName, context);
+            return (_a = utils_1.globule === null || utils_1.globule === void 0 ? void 0 : utils_1.globule.nunjucks) === null || _a === void 0 ? void 0 : _a.render(templateName, context);
         }
         return null;
     };
@@ -220,7 +211,7 @@ var RedirectController = /** @class */ (function (_super) {
     /**
      * Takes the path to redirect as argument and saves it
      *
-     * @param pathTo
+     * @param {string} pathTo - path to redirect to
      * @returns void
      */
     function RedirectController(pathTo) {
@@ -235,7 +226,7 @@ var RedirectController = /** @class */ (function (_super) {
         return _this;
     }
     /**
-     * Perform the redirection and return path redirecting to
+     * Redirect and return path redirecting to
      *
      * @returns string
      */
@@ -268,7 +259,7 @@ var BaseError = /** @class */ (function (_super) {
     /**
      * Prepares the error message
      *
-     * @param msg
+     * @param {string} msg - the message to output
      * @returns void
      */
     function BaseError(msg) {
@@ -301,7 +292,7 @@ var BaseError = /** @class */ (function (_super) {
     /**
      * Sets the error prefix
      *
-     * @param prefix
+     * @param {string} prefix - the prefix to add to error messages
      * @returns string
      */
     BaseError.prototype.setPrefix = function (prefix) {
@@ -310,8 +301,8 @@ var BaseError = /** @class */ (function (_super) {
     /**
      * Sets the value of the error message
      *
-     * @param msg
-     * @param args
+     * @param {string} msg - the error message which may contain optional flag indexes for formatting e.g %1
+     * @param {string[]} args - list of args to use when formating
      * @returns string
      */
     BaseError.prototype.setMessage = function (msg, args) {
@@ -369,10 +360,10 @@ var base_1 = __importDefault(require("./base"));
 var InstanceError = /** @class */ (function (_super) {
     __extends(InstanceError, _super);
     /**
-     * Initialize the new error
+     * Initialize the new error when a wron type or instance is specified for `name`
      *
-     * @param name
-     * @param type
+     * @param {string} name - name of the instance
+     * @param {string} type - the expected instance
      * @returns void
      */
     function InstanceError(name, type) {
@@ -433,10 +424,11 @@ var base_1 = __importDefault(require("./base"));
 var RouteError = /** @class */ (function (_super) {
     __extends(RouteError, _super);
     /**
-     * Initialize the new error
+     * Initialize the new error when a Route/routepack property is lacking definition
      *
-     * @param name
-     * @param type
+     * @param {string} name - name of the property
+     * @param {any} value - the Route/routepack object/class
+     * @param {string} type - the type of definition
      * @returns void
      */
     function RouteError(name, value, type) {
@@ -489,6 +481,36 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -497,13 +519,13 @@ var controller_1 = __importDefault(require("./controller"));
 var control_1 = __importDefault(require("./controller/control"));
 var paths_1 = __importDefault(require("./paths"));
 var resolve_1 = __importDefault(require("./resolve"));
-var utils_1 = require("./utils");
+var Util = __importStar(require("./utils"));
 module.exports = /** @class */ (function (_super) {
     __extends(Knuck, _super);
     /**
      * Provide an easy way to register routes et al.
      *
-     * @param callback
+     * @param callback - Called immediately. Takes the Route and controller as arguments for easy use
      * @returns void
      */
     function Knuck(callback) {
@@ -514,33 +536,61 @@ module.exports = /** @class */ (function (_super) {
         }
         return _this;
     }
-    /**
-     * Output the resolved routes
-     *
-     * @returns Resolve
-     */
-    Knuck.prototype.output = function () {
-        var _this = this;
-        var currentRoute = null;
-        router_1.default.getInstance().all().forEach(function (route) {
-            var path = new paths_1.default(utils_1.watchPrefix(route.path, _this.prefix), _this.realpath);
-            path.setPatterns(router_1.default.getPatterns());
-            if (path.matches()) {
-                currentRoute = { route: route, path: path };
+    Object.defineProperty(Knuck.prototype, "realpath", {
+        /**
+         * Get accessor for realpath
+         *
+         * @var path
+         */
+        get: function () {
+            var path = this._realpath;
+            if (typeof path === "function") {
+                path = path.call(this);
             }
-        });
-        return currentRoute;
+            if (!path) {
+                return Util.watchSuffix(this.prefix, "/");
+            }
+            return path;
+        },
+        /**
+         * Set accessor for realpath
+         *
+         * @returns void
+         */
+        set: function (newPath) {
+            var _a;
+            this._realpath = ((_a = this._pathWick) === null || _a === void 0 ? void 0 : _a.call(this, newPath)) || newPath;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    /**
+     * Exports out the Utils, Route and Controller
+     *
+     * @returns object
+     */
+    Knuck.prototype.export = function () {
+        return __assign({ Route: router_1.default, Controller: controller_1.default }, Util);
     };
     /**
-     * Render the current route
+     * Get the current route and returns it pack
      *
-     * @param currentRoute
-     * @param callback
+     * @returns routePack
+     */
+    Knuck.prototype.currentRoute = function () {
+        return router_1.default.find(this.realpath, this.prefix);
+    };
+    /**
+     * Render the current route once using `callback` unless `forceRender` is set as true
+     *
+     * @param callback - This will be called after rendering. Takes the resolver as its only argument
+     * @param currentRoute - The current route pack. Defaults to Knuck.currentRoute()
+     * @param forceRender - Set as true to forcefully render the current route. Default: false
      * @returns void
      */
     Knuck.prototype.render = function (callback, currentRoute, forceRender) {
         var _a;
-        if (currentRoute === void 0) { currentRoute = this.output(); }
+        if (currentRoute === void 0) { currentRoute = this.currentRoute(); }
         if (forceRender === void 0) { forceRender = false; }
         if (((_a = router_1.default.currentRoute) === null || _a === void 0 ? void 0 : _a.path) === (currentRoute === null || currentRoute === void 0 ? void 0 : currentRoute.route.path) && forceRender !== true) {
             return null;
@@ -554,7 +604,7 @@ module.exports = /** @class */ (function (_super) {
             }
         });
         if (typeof callback !== "function") {
-            utils_1.debug("458", "callback", "function");
+            Util.debug("458", "callback", "function");
         }
         if ((currentRoute === null || currentRoute === void 0 ? void 0 : currentRoute.path) instanceof paths_1.default) {
             router_1.default.currentRoute = currentRoute.route;
@@ -562,29 +612,31 @@ module.exports = /** @class */ (function (_super) {
         }
     };
     /**
-     * Single Page Application output
+     * Continuously watch routes and render
      *
-     * @param callback
+     * @param callback - to be called when rendering
      * @returns void
      */
     Knuck.prototype.run = function (callback) {
         var _this = this;
         this.render(callback);
-        setInterval(function () { return _this.render(callback); }, 1005);
+        setInterval(function () { return _this.render(callback); }, 5);
     };
     /**
-     * Use to set the realpath optionally
+     * Use to set the realpath and its wick optionally
      *
-     * @param wick
+     * @param wick - callback to handle realpaths
      * @returns path
      */
     Knuck.prototype.setWick = function (wick) {
+        if (typeof wick === "function")
+            this._pathWick = wick;
         return this._realpath = wick;
     };
     /**
      * Use to set path prefix
      *
-     * @param prefix
+     * @param prefix - string to be prepended to a path if its not there already
      * @returns string
      */
     Knuck.prototype.setPrefix = function (prefix) {
@@ -602,9 +654,16 @@ var Pathfinder = /** @class */ (function () {
     /**
      * Discover variables and parse
      *
-     * @param path
+     * @param {string} path - the route path, which may contain variables describe in braces {myVar}
+     * @param {string} realpath - the real path to test for
      */
     function Pathfinder(path, realpath) {
+        /**
+         * List of parts from realpath
+         *
+         * @var string[]
+         */
+        this.$parts = [];
         /**
          * RegExp pattern for matching variables
          *
@@ -644,7 +703,7 @@ var Pathfinder = /** @class */ (function () {
     /**
      * Gets the regex for a pattern name
      *
-     * @param name
+     * @param {string} name - name of the pattern
      * @returns RegExp
      */
     Pathfinder.prototype.regex = function (name) {
@@ -658,10 +717,10 @@ var Pathfinder = /** @class */ (function () {
         return new RegExp(pattern);
     };
     /**
-     * Adds a new patern
+     * Adds a new pattern using `name` and `pattern`
      *
-     * @param name
-     * @param pattern
+     * @param {string} name - name of the pattern
+     * @param {string} pattern - the regexp pattern to index
      * @returns string
      */
     Pathfinder.prototype.setPattern = function (name, pattern) {
@@ -670,19 +729,19 @@ var Pathfinder = /** @class */ (function () {
     /**
      * Import a set of patterns
      *
-     * @param list
-     * @returns void
+     * @param {routePatternList} list - list of patterns to inherit
+     * @returns boolean
      */
     Pathfinder.prototype.setPatterns = function (list) {
         var _this = this;
-        list.forEach(function (type) {
-            _this.setPattern(type.name, type.pattern);
+        return list.every(function (type) {
+            return _this.setPattern(type.name, type.pattern);
         });
     };
     /**
      * Gets a variable from a realpath
      *
-     * @param name
+     * @param {string} name - name of the variable
      * @returns string
      */
     Pathfinder.prototype.getVar = function (name) {
@@ -723,9 +782,9 @@ var Pathfinder = /** @class */ (function () {
         return $vars;
     };
     /**
-     * Sets the parts list
+     * Sets the parts list using realpath `path`
      *
-     * @param path
+     * @param {string} path
      * @return string[]
      */
     Pathfinder.prototype.setPath = function (path) {
@@ -769,7 +828,7 @@ var Resolver = /** @class */ (function (_super) {
     /**
      * Receive currentRoute and Handles it
      *
-     * @param currentRoute
+     * @param {routePack} currentRoute - routePack of current/desired route to resolve
      * @returns void
      */
     function Resolver(currentRoute, instance) {
@@ -815,6 +874,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var instance_1 = __importDefault(require("./instance"));
 var redirect_1 = __importDefault(require("../controller/redirect"));
+var paths_1 = __importDefault(require("../paths"));
+var utils_1 = require("../utils");
 /** App Route implemntation class */
 var Route = /** @class */ (function (_super) {
     __extends(Route, _super);
@@ -837,8 +898,8 @@ var Route = /** @class */ (function (_super) {
     /**
      * Handle GET Requests
      *
-     * @param path
-     * @param controllerOrCallback
+     * @param {string} path - the path to listen for which may contain variables in braces e.g: {myVar}
+     * @param {Controller|Function} controllerOrCallback - The initialized controller to use or a callback function
      * @returns void
      */
     Route.get = function (path, controllerOrCallback) {
@@ -847,27 +908,27 @@ var Route = /** @class */ (function (_super) {
     /**
      * Handle POST Requests
      *
-     * @param path
-     * @param controllerOrCallback
+     * @param {string} path - the path to listen for which may contain variables in braces e.g: {myVar}
+     * @param {Controller|Function} controllerOrCallback - The initialized controller to use or a callback function
      * @returns void
      */
     Route.post = function (path, controllerOrCallback) {
         this.register("POST", path, controllerOrCallback);
     };
     /**
-     * Handle Redirection
+     * Handle Redirection from a `path` to a `pathTo`
      *
-     * @param path
-     * @param pathTo
+     * @param {string} path - the path to listen for which may contain variables in braces e.g: {myVar}
+     * @param {string} pathTo - the path to redirect to
      * @returns void
      */
     Route.redirect = function (path, pathTo) {
         this.get(path, new redirect_1.default(pathTo));
     };
     /**
-     * Handle Fallback routes
+     * Handle Fallback routes, useful for error pages
      *
-     * @param controllerOrCallback
+     * @param {Controller|Function} controllerOrCallback - The initialized controller to use or a callback function
      * @returns void
      */
     Route.fallback = function (controllerOrCallback) {
@@ -879,8 +940,8 @@ var Route = /** @class */ (function (_super) {
     /**
      * Handle GET/POST Requests
      *
-     * @param path
-     * @param controllerOrCallback
+     * @param {string} path - the path to listen for which may contain variables in braces e.g: {myVar}
+     * @param {Controller|Function} controllerOrCallback - The initialized controller to use or a callback function
      * @returns void
      */
     Route.any = function (path, controllerOrCallback) {
@@ -888,14 +949,33 @@ var Route = /** @class */ (function (_super) {
         this.post(path, controllerOrCallback);
     };
     /**
-     * Create new pattern
+     * Find a route that best matches a path using an optional prefix and return the pack
      *
-     * @param name
-     * @param pattern
-     * @returns number
+     * @param {string} currentPath - the path to find a match for
+     * @param {string} prefix - optional prefix for routes
+     * @returns routePack
+     */
+    Route.find = function (currentPath, prefix) {
+        var _this = this;
+        var bestMatch = null;
+        this.getInstance().all().forEach(function (route) {
+            var path = new paths_1.default(utils_1.watchPrefix(route.path, prefix), currentPath);
+            path.setPatterns(_this.getPatterns());
+            if (path.matches()) {
+                bestMatch = { route: route, path: path };
+            }
+        });
+        return bestMatch;
+    };
+    /**
+     * Create new pattern using `name` and `pattern` and returns its index
+     *
+     * @param {string} name - name of the pattern
+     * @param {string} pattern - the regexp pattern string
+     * @returns number - the index of new pattern
      */
     Route.pattern = function (name, pattern) {
-        return this.getInstance().$patterns.push({ name: name, pattern: pattern });
+        return this.getInstance().$patterns.push({ name: name, pattern: pattern }) - 1;
     };
     /**
      * Returns a list of route Patterns
@@ -917,7 +997,7 @@ var Route = /** @class */ (function (_super) {
 }(instance_1.default));
 exports.default = Route;
 
-},{"../controller/redirect":3,"./instance":12}],12:[function(require,module,exports){
+},{"../controller/redirect":3,"../paths":9,"../utils":13,"./instance":12}],12:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -927,7 +1007,7 @@ var controller_1 = __importDefault(require("../controller"));
 var utils_1 = require("../utils");
 var RouteInstance = /** @class */ (function () {
     /**
-     * Constructor for singleton routes class
+     * Constructor for routes instance
      *
      * @returns void
      */
@@ -956,9 +1036,9 @@ var RouteInstance = /** @class */ (function () {
     /**
      * Register new HTTP Requests
      *
-     * @param method
-     * @param path
-     * @param controllerOrCallback
+     * @param {string} method - the allowed method can be "GET" or "POST"
+     * @param {string} path - the path to listen for
+     * @param {Controller|Function} controllerOrCallback - The initialized controller to use or a callback function
      * @returns void
      */
     RouteInstance.register = function (method, path, controllerOrCallback) {
@@ -1013,13 +1093,16 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.debug = exports.watchSuffix = exports.watchPrefix = exports.capslock = void 0;
+exports.globule = exports.debug = exports.watchSuffix = exports.watchPrefix = exports.capslock = void 0;
 var Debugkit = __importStar(require("../errors"));
+/** modify window only for types */
+var globule = typeof window === "object" ? window : null;
+exports.globule = globule;
 /**
- * Tentatively capitalize first word in text
+ * Tentatively capitalize first character of words in `text`
  *
- * @param text
- * @param delimiter
+ * @param {string} text - the text to capitalize
+ * @param {string} delimiter - the word delimiter defaults to a single whitespace character " "
  * @returns string
  */
 var capslock = function (text, delimiter) {
@@ -1034,10 +1117,10 @@ var capslock = function (text, delimiter) {
 };
 exports.capslock = capslock;
 /**
- * Prepend prefix to text if not already Prepended
+ * Prepend prefix to `text` if not already Prepended
  *
- * @param text
- * @param prefix
+ * @param {string} text - The text to modify
+ * @param {string} prefix - the prefix to prepend
  * @returns string
  */
 var watchPrefix = function (text, prefix) {
@@ -1049,10 +1132,10 @@ var watchPrefix = function (text, prefix) {
 };
 exports.watchPrefix = watchPrefix;
 /**
- * Append suffix to text if not already appended
+ * Append suffix to `text` if not already appended
  *
- * @param text
- * @param suffix
+ * @param {string} text - The text to modify
+ * @param {string} suffix - the suffix to append
  * @returns string
  */
 var watchSuffix = function (text, suffix) {
@@ -1065,8 +1148,8 @@ exports.watchSuffix = watchSuffix;
 /**
  * Throw debug informations
  *
- * @param errorType
- * @param args
+ * @param {string} errorType - The error type code
+ * @param {any[]} ...args
  * @returns void
  */
 var debug = function (errorType) {
@@ -1077,7 +1160,7 @@ var debug = function (errorType) {
     }
     var Debug = Debugkit;
     for (var catcher in Debug) {
-        if (Debug[catcher].typeCode == watchPrefix(errorType, "19") && !(catcher in new Object)) {
+        if (globule.KNUCK_DBG !== false && Debug[catcher].typeCode == watchPrefix(errorType, "19") && !(catcher in new Object)) {
             throw new ((_a = Debug[catcher]).bind.apply(_a, __spreadArrays([void 0], args)))();
         }
     }

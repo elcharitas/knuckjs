@@ -1,9 +1,5 @@
 import Control from "./control"
-import { watchSuffix } from "../utils";
-import { globule } from "../types";
-
-/** modify window only for types */
-let globule: globule = typeof window === "object" ? window: null;
+import { globule, watchSuffix } from "../utils";
 
 /** Route Controller is used to define multiple invokable methods for generating response */
 export default class Controller extends Control

@@ -1,5 +1,8 @@
 import * as Debugkit from "../errors";
-import { obj } from "../types";
+import { globule, obj } from "../types";
+
+/** modify window only for types */
+let globule: globule = typeof window === "object" ? window : null;
 
 /**
  * Tentatively capitalize first character of words in `text`
@@ -58,7 +61,7 @@ let debug = (errorType: string, ...args: Array<any>): void => {
     let Debug: obj = Debugkit;
     for (let catcher in Debug)
     {
-        if (Debug[catcher].typeCode == watchPrefix(errorType, "19") && !(catcher in new Object))
+        if (globule.KNUCK_DBG !== false && Debug[catcher].typeCode == watchPrefix(errorType, "19") && !(catcher in new Object))
         {
             throw new Debug[catcher](...args);
         }
@@ -69,5 +72,6 @@ export {
     capslock,
     watchPrefix,
     watchSuffix,
-    debug
+    debug,
+    globule
 }
