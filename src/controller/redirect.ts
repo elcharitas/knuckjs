@@ -15,18 +15,17 @@ class RedirectController extends Controller
     /**
      * Takes the path to redirect as argument and saves it
      * 
-     * @param pathTo
+     * @param {string} pathTo - path to redirect to
      * @returns void
      */
     constructor(pathTo: string)
     {
         super();
-
         this.redirectTo = pathTo;
     }
 
     /**
-     * Perform the redirection and return path redirecting to
+     * Redirect and return path redirecting to
      * 
      * @returns string
      */

@@ -33,10 +33,11 @@ export default
     public helplink: string = "https://knuck.js.org/guide/errors/routes";
 
     /**
-     * Initialize the new error
+     * Initialize the new error when a Route/routepack property is lacking definition
      * 
-     * @param name 
-     * @param type
+     * @param {string} name - name of the property
+     * @param {any} value - the Route/routepack object/class
+     * @param {string} type - the type of definition
      * @returns void
      */
     constructor(name: string, value: any, type: string = "unique") {

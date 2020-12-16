@@ -36,7 +36,7 @@ class BaseError extends Error
     /**
      * Prepares the error message
      * 
-     * @param msg 
+     * @param {string} msg - the message to output
      * @returns void
      */
     constructor(msg?: string)
@@ -53,7 +53,7 @@ class BaseError extends Error
     /**
      * Sets the error prefix
      * 
-     * @param prefix
+     * @param {string} prefix - the prefix to add to error messages
      * @returns string
      */
     public setPrefix(prefix: string)
@@ -64,8 +64,8 @@ class BaseError extends Error
     /**
      * Sets the value of the error message
      * 
-     * @param msg
-     * @param args
+     * @param {string} msg - the error message which may contain optional flag indexes for formatting e.g %1
+     * @param {string[]} args - list of args to use when formating
      * @returns string
      */
     public setMessage(msg: string, args: Array<string|number> = [])

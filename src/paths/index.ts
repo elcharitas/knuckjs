@@ -23,7 +23,7 @@ export default class Pathfinder
      * 
      * @var string[]
      */
-    protected $parts: Array<string>;
+    protected $parts: Array<string> = [];
 
     /**
      * RegExp pattern for matching variables
@@ -42,7 +42,8 @@ export default class Pathfinder
     /**
      * Discover variables and parse
      * 
-     * @param path 
+     * @param {string} path - the route path, which may contain variables describe in braces {myVar}
+     * @param {string} realpath - the real path to test for
      */
     constructor(path: string, realpath?: string)
     {
@@ -79,7 +80,7 @@ export default class Pathfinder
     /**
      * Gets the regex for a pattern name
      * 
-     * @param name
+     * @param {string} name - name of the pattern
      * @returns RegExp
      */
     public regex(name: string): RegExp
@@ -100,10 +101,10 @@ export default class Pathfinder
     }
 
     /**
-     * Adds a new patern
+     * Adds a new pattern using `name` and `pattern`
      * 
-     * @param name 
-     * @param pattern 
+     * @param {string} name - name of the pattern
+     * @param {string} pattern - the regexp pattern to index
      * @returns string
      */
     public setPattern(name: string, pattern: string): string
@@ -114,20 +115,20 @@ export default class Pathfinder
     /**
      * Import a set of patterns
      * 
-     * @param list 
-     * @returns void
+     * @param {routePatternList} list - list of patterns to inherit
+     * @returns boolean
      */
-    public setPatterns(list: routePatternList): void
+    public setPatterns(list: routePatternList): boolean
     {
-        list.forEach((type: routePattern) => {
+        return list.every((type: routePattern) => 
             this.setPattern(type.name, type.pattern)
-        });
+        );
     }
 
     /**
      * Gets a variable from a realpath
      * 
-     * @param name 
+     * @param {string} name - name of the variable
      * @returns string
      */
     public getVar(name: string): string
@@ -178,9 +179,9 @@ export default class Pathfinder
     }
 
     /**
-     * Sets the parts list
+     * Sets the parts list using realpath `path`
      * 
-     * @param path
+     * @param {string} path
      * @return string[]
      */
     public setPath(path: string): string[]

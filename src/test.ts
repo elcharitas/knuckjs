@@ -1,8 +1,10 @@
 import Knuck from "./knuckjs";
 
 new Knuck(function(this: Knuck, Route){
-    // original path
-    this.realpath = "/";
+    // lets use wick to control our real path
+    this.setWick(path => {
+        return path;
+    });
 
     // KnuckJS supports patterns!
     Route.pattern('fallback', '.*');

@@ -11,7 +11,7 @@ export default class Controller extends Control
     /**
      * Method to be called by default
      * 
-     * @param _args - Route variables passed to the method
+     * @param {any[]} ..._args - Route variables passed to the method
      * @returns string
      */
     public invoke(..._args: any[]): string
@@ -22,8 +22,8 @@ export default class Controller extends Control
     /**
      * Use to render nunjucks templates
      * 
-     * @param templateName 
-     * @param context
+     * @param {string} templateName - name of the template
+     * @param {object} context - an object of variables to pass into the context
      * @returns string
      */
     public view(templateName: string, context?: object): string

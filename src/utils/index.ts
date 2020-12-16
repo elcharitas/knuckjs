@@ -2,10 +2,10 @@ import * as Debugkit from "../errors";
 import { obj } from "../types";
 
 /**
- * Tentatively capitalize first word in text
+ * Tentatively capitalize first character of words in `text`
  * 
- * @param text 
- * @param delimiter
+ * @param {string} text - the text to capitalize
+ * @param {string} delimiter - the word delimiter defaults to a single whitespace character " "
  * @returns string
  */
 let capslock = (text: string, delimiter: string = " "): string => {
@@ -19,10 +19,10 @@ let capslock = (text: string, delimiter: string = " "): string => {
 }
 
 /**
- * Prepend prefix to text if not already Prepended
+ * Prepend prefix to `text` if not already Prepended
  * 
- * @param text 
- * @param prefix
+ * @param {string} text - The text to modify
+ * @param {string} prefix - the prefix to prepend
  * @returns string
  */
 let watchPrefix = (text: string, prefix: string = ""): string => {
@@ -34,10 +34,10 @@ let watchPrefix = (text: string, prefix: string = ""): string => {
 }
 
 /**
- * Append suffix to text if not already appended
+ * Append suffix to `text` if not already appended
  * 
- * @param text 
- * @param suffix
+ * @param {string} text - The text to modify
+ * @param {string} suffix - the suffix to append
  * @returns string
  */
 let watchSuffix = (text: string, suffix: string): string => {
@@ -50,8 +50,8 @@ let watchSuffix = (text: string, suffix: string): string => {
 /**
  * Throw debug informations
  * 
- * @param errorType 
- * @param args
+ * @param {string} errorType - The error type code
+ * @param {any[]} ...args
  * @returns void
  */
 let debug = (errorType: string, ...args: Array<any>): void => {

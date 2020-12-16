@@ -34,10 +34,10 @@ class InstanceError extends BaseError
     public helplink: string = "https://knuck.js.org/guide/errors/instance";
 
     /**
-     * Initialize the new error
+     * Initialize the new error when a wron type or instance is specified for `name`
      * 
-     * @param name 
-     * @param type
+     * @param {string} name - name of the instance
+     * @param {string} type - the expected instance
      * @returns void
      */
     constructor(name: string, type: string = "defined")

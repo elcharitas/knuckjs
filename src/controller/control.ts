@@ -32,17 +32,7 @@ export default class Control
      */
     public get realpath(): path
     {
-        let path: path = this._realpath;
-
-        if (typeof path === "function") {
-            path = path.call(this);
-        }
-
-        if (!path) {
-            return watchSuffix(this.prefix, "/")
-        }
-
-        return path;
+        return this._realpath;
     }
 
     /**
@@ -65,7 +55,7 @@ export default class Control
     /**
      * Performs redirection and returns the path
      * 
-     * @param path
+     * @param {string} path - path to redirect to
      * @returns string
      */
     public redirect(path: string): string
@@ -86,7 +76,7 @@ export default class Control
      * Evaluates one or more middlewares.
      * returns true on success, otherwise false
      * 
-     * @param names
+     * @param {string|string[]} names - the name of the middleware or a list of names
      * @returns boolean
      */
     public middleware(names: string | string[]): boolean
@@ -104,8 +94,8 @@ export default class Control
     /**
      * Regiters a middleware into current control and returns new middleware count
      * 
-     * @param name 
-     * @param callback
+     * @param {string} name - name of the middleware
+     * @param {middleware} callback - the function to call once the middleware is activated
      * @returns number
      */
     public registerMiddleware(name: string, callback: middleware): number
@@ -124,9 +114,9 @@ export default class Control
     }
 
     /**
-     * Sets the global instance
+     * Sets the global instance to a new one
      * 
-     * @param instance
+     * @param {this} instance - the new instance to use
      * @returns instance
      */
     public setInstance(instance?: this): this
@@ -147,7 +137,7 @@ export default class Control
     /**
      * Gets a middleware callback in the global/local instance by its name
      * 
-     * @param name
+     * @param {string} name - name of the middleware
      * @returns middleware
      */
     protected getMiddleware(name: string): middleware

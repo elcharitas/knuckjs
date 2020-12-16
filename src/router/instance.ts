@@ -26,7 +26,7 @@ export default class RouteInstance
     public static currentRoute: route = null;
 
     /**
-     * Constructor for singleton routes class
+     * Constructor for routes instance
      * 
      * @returns void
      */
@@ -62,9 +62,9 @@ export default class RouteInstance
     /**
      * Register new HTTP Requests
      * 
-     * @param method
-     * @param path 
-     * @param controllerOrCallback
+     * @param {string} method - the allowed method can be "GET" or "POST"
+     * @param {string} path - the path to listen for
+     * @param {Controller|Function} controllerOrCallback - The initialized controller to use or a callback function
      * @returns void
      */
     protected static register(method: string, path: string, controllerOrCallback: any): void

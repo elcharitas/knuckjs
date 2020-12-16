@@ -30,7 +30,7 @@ class Resolver extends Controller
     /**
      * Receive currentRoute and Handles it
      * 
-     * @param currentRoute
+     * @param {routePack} currentRoute - routePack of current/desired route to resolve
      * @returns void 
      */
     constructor(currentRoute: routePack, instance?: any)

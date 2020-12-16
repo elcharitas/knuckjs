@@ -17,6 +17,25 @@ export = class Knuck extends Control
     protected _pathWick: (newPath: string) => string;
 
     /**
+     * Get accessor for realpath
+     * 
+     * @var path
+     */
+    public get realpath() {
+        let path: path = this._realpath;
+
+        if (typeof path === "function") {
+            path = path.call(this);
+        }
+
+        if (!path) {
+            return Util.watchSuffix(this.prefix, "/")
+        }
+
+        return path;
+    }
+
+    /**
      * Set accessor for realpath
      * 
      * @returns void
@@ -113,9 +132,9 @@ export = class Knuck extends Control
     }
 
     /**
-     * Use to set the realpath optionally
+     * Use to set the realpath and its wick optionally
      * 
-     * @param wick
+     * @param wick - callback to handle realpaths
      * @returns path
      */
     public setWick(wick: path): path
@@ -127,7 +146,7 @@ export = class Knuck extends Control
     /**
      * Use to set path prefix
      * 
-     * @param prefix
+     * @param prefix - string to be prepended to a path if its not there already
      * @returns string
      */
     public setPrefix(prefix: string): string
