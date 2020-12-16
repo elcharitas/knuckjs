@@ -3,16 +3,33 @@ import Controller from "./controller";
 import Control from "./controller/control";
 import Pathfinder from "./paths";
 import Resolver from "./resolve";
-import { debug, watchPrefix } from "./utils";
+import * as Util from "./utils";
 import { path, routePack, routeCallback } from "./types";
 
 /** Knucks is what handles the rest... */
 export = class Knuck extends Control
 {
     /**
+     * Wick for controlling realpath setting
+     * 
+     * @var () => path
+     */
+    protected _pathWick: (newPath: string) => string;
+
+    /**
+     * Set accessor for realpath
+     * 
+     * @returns void
+     */
+    public set realpath(newPath: string)
+    {
+        this._realpath = this._pathWick?.call(this, newPath) || newPath;
+    }
+
+    /**
      * Provide an easy way to register routes et al.
      * 
-     * @param callback 
+     * @param callback - Called immediately. Takes the Route and controller as arguments for easy use
      * @returns void
      */
     constructor(callback?: (BaseRoute: typeof Route, BaseController: typeof Controller) => any)
@@ -26,36 +43,36 @@ export = class Knuck extends Control
             callback.call(this, Route, Controller)
         }
     }
+
+    /**
+     * Exports out the Utils, Route and Controller
+     * 
+     * @returns object
+     */
+    public export(): object
+    {
+        return { Route, Controller, ...Util }
+    }
     
     /**
-     * Output the resolved routes
+     * Get the current route and returns it pack
      * 
-     * @returns Resolve
+     * @returns routePack
      */
-    public output(): routePack
+    public currentRoute(): routePack
     {
-        let currentRoute: routePack = null;
-
-        Route.getInstance().all().forEach(route => {
-            let path = new Pathfinder(watchPrefix(route.path, this.prefix), this.realpath as string);
-            path.setPatterns(Route.getPatterns());
-            if (path.matches())
-            {
-                currentRoute = { route, path };
-            }
-        });
-
-        return currentRoute;
+        return Route.find(this.realpath, this.prefix);
     }
 
     /**
-     * Render the current route
+     * Render the current route once using `callback` unless `forceRender` is set as true
      * 
-     * @param currentRoute
-     * @param callback
+     * @param callback - This will be called after rendering. Takes the resolver as its only argument
+     * @param currentRoute - The current route pack. Defaults to Knuck.currentRoute()
+     * @param forceRender - Set as true to forcefully render the current route. Default: false
      * @returns void
      */
-    public render(callback?: routeCallback, currentRoute: routePack = this.output(), forceRender: boolean = false): void
+    public render(callback?: routeCallback, currentRoute: routePack = this.currentRoute(), forceRender: boolean = false): void
     {
         if ( Route.currentRoute?.path === currentRoute?.route.path && forceRender !== true)
         {
@@ -72,27 +89,27 @@ export = class Knuck extends Control
 
         if (typeof callback !== "function")
         {
-            debug("458", "callback", "function");
+            Util.debug("458", "callback", "function");
         }
 
         if (currentRoute?.path instanceof Pathfinder)
         {
             Route.currentRoute = currentRoute.route;
-            callback.apply(this, [new Resolver(currentRoute, this)]);
+            callback.apply(this, [ new Resolver(currentRoute, this) ]);
         }
     }
 
     /**
-     * Single Page Application output
+     * Continuously watch routes and render
      * 
-     * @param callback
+     * @param callback - to be called when rendering
      * @returns void
      */
     public run(callback?: routeCallback): void
     {
         this.render(callback);
 
-        setInterval(() => this.render(callback), 1005);
+        setInterval(() => this.render(callback), 5);
     }
 
     /**
@@ -103,6 +120,7 @@ export = class Knuck extends Control
      */
     public setWick(wick: path): path
     {
+        if (typeof wick === "function") this._pathWick = wick;
         return this._realpath = wick;
     }
 
